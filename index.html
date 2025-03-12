@@ -130,73 +130,72 @@
 
     <!-- Game Embed (Initially hidden until after ad) -->
     <div id="game-container">
-        <iframe src="YOUR_GAME_URL" width="100%" height="600"></iframe>
+        <iframe src="https://gswitch3.github.io/g77/drive-mad" width="100%" height="600"></iframe>
     </div>
 
-    <script type="module">
-        // Firebase configuration
-        const firebaseConfig = {
-    apiKey: "AIzaSyBVx-V7DHGnWxwp5iqwrhPqBLnjf-frnT4",
-    authDomain: "sigmasigma-57fca.firebaseapp.com",
-    projectId: "sigmasigma-57fca",
-    storageBucket: "sigmasigma-57fca.firebasestorage.app",
-    messagingSenderId: "1071388845488",
-    appId: "1:1071388845488:web:bc50d819aeb446ef03e275"
-};
+<script>
+    // Firebase configuration
+    const firebaseConfig = {
+        apiKey: "AIzaSyBVx-V7DHGnWxwp5iqwrhPqBLnjf-frnT4",
+        authDomain: "sigmasigma-57fca.firebaseapp.com",
+        projectId: "sigmasigma-57fca",
+        storageBucket: "sigmasigma-57fca.firebasestorage.app",
+        messagingSenderId: "1071388845488",
+        appId: "1:1071388845488:web:bc50d819aeb446ef03e275"
+    };
 
-        // Initialize Firebase
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
 
-        // Authentication functions
-        function signUp() {
-            const email = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
+    // Sign Up function
+    function signUp() {
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
 
-            createUserWithEmailAndPassword(auth, email, password)
-                .then(() => {
-                    window.location.reload(); // Reload to show the game section
-                })
-                .catch((error) => {
-                    document.getElementById('error-message').innerText = error.message;
-                });
+        createUserWithEmailAndPassword(auth, email, password)
+            .then(() => {
+                window.location.reload(); // Reload to show the game section
+            })
+            .catch((error) => {
+                document.getElementById('error-message').innerText = error.message;
+            });
+    }
+
+    // Log In function
+    function logIn() {
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
+
+        signInWithEmailAndPassword(auth, email, password)
+            .then(() => {
+                window.location.reload(); // Reload to show the game section
+            })
+            .catch((error) => {
+                document.getElementById('error-message').innerText = error.message;
+            });
+    }
+
+    // Show the game after ad
+    function showAd() {
+        // Show an ad (Google AdSense or custom ad logic)
+        (adsbygoogle = window.adsbygoogle || []).push({});
+        
+        // After ad is displayed, show the game
+        setTimeout(() => {
+            document.getElementById('game-section').style.display = 'none';
+            document.getElementById('game-container').style.display = 'block';
+        }, 3000); // Adjust delay if necessary
+    }
+
+    // Handle user authentication state
+    auth.onAuthStateChanged((user) => {
+        if (user) {
+            document.getElementById('auth-form').style.display = 'none';
+            document.getElementById('game-section').style.display = 'block';
+        } else {
+            document.getElementById('auth-form').style.display = 'block';
+            document.getElementById('game-section').style.display = 'none';
         }
-
-        function logIn() {
-            const email = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
-
-            signInWithEmailAndPassword(auth, email, password)
-                .then(() => {
-                    window.location.reload(); // Reload to show the game section
-                })
-                .catch((error) => {
-                    document.getElementById('error-message').innerText = error.message;
-                });
-        }
-
-        // Show the game after ad
-        function showAd() {
-            // Show an ad (Google AdSense or custom ad logic)
-            (adsbygoogle = window.adsbygoogle || []).push({});
-            
-            // After ad is displayed, show the game
-            setTimeout(() => {
-                document.getElementById('game-section').style.display = 'none';
-                document.getElementById('game-container').style.display = 'block';
-            }, 3000); // Adjust delay if necessary
-        }
-
-        // Handle user authentication state
-        auth.onAuthStateChanged((user) => {
-            if (user) {
-                document.getElementById('auth-form').style.display = 'none';
-                document.getElementById('game-section').style.display = 'block';
-            } else {
-                document.getElementById('auth-form').style.display = 'block';
-                document.getElementById('game-section').style.display = 'none';
-            }
-        });
-    </script>
-</body>
-</html>
+    });
+</script>
