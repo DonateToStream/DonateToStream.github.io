@@ -26,19 +26,19 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 
         // Sign Up function
-        window.signUp = function() {
-            const email = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
+       window.signUp = function() {
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
 
-            createUserWithEmailAndPassword(auth, email, password)
-                .then(() => {
-                    window.location.reload(); // Reload to show the game section
-                })
-                .catch((error) => {
-                    document.getElementById('error-message').innerText = error.message;
-                });
-        };
-
+    createUserWithEmailAndPassword(auth, email, password)
+        .then(() => {
+            window.location.reload(); // Reload to show the game section
+        })
+        .catch((error) => {
+            console.error("Error during sign up: ", error.code, error.message);
+            document.getElementById('error-message').innerText = `Error: ${error.message}`;
+        });
+};
         // Log In function
         window.logIn = function() {
             const email = document.getElementById('email').value;
