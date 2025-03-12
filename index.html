@@ -3,15 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline' https://pagead2.googlesyndication.com;">
-    <title>Link Buttons with Ads</title>
+    <title>Watch Ad to Get Link</title>
     <script type="module">
-        // Import Firebase SDKs
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-app.js";
-        import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-database.js";
-        import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-analytics.js";
-
         // Firebase configuration
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-app.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-analytics.js";
+        import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-database.js";
+
         const firebaseConfig = {
             apiKey: "AIzaSyBVx-V7DHGnWxwp5iqwrhPqBLnjf-frnT4",
             authDomain: "sigmasigma-57fca.firebaseapp.com",
@@ -25,60 +23,17 @@
 
         // Initialize Firebase
         const app = initializeApp(firebaseConfig);
-        const db = getDatabase(app);
         const analytics = getAnalytics(app);
-
-        // Fetch buttons from Firebase Realtime Database
-        function loadButtons() {
-            const buttonsContainer = document.getElementById('buttons-container');
-            const buttonsRef = ref(db, 'buttons');  // Path to your buttons data in the DB
-            
-            get(buttonsRef).then((snapshot) => {
-                if (snapshot.exists()) {
-                    const buttons = snapshot.val();
-                    for (const buttonId in buttons) {
-                        const buttonData = buttons[buttonId];
-                        const button = document.createElement("button");
-                        button.textContent = buttonData.name;
-                        button.onclick = () => showAdAndOpenLink(buttonData.url);
-                        buttonsContainer.appendChild(button);
-                    }
-                } else {
-                    console.log("No data available");
-                }
-            }).catch((error) => {
-                console.error("Error getting data: ", error);
-            });
-        }
-
-        // Show Ad and then open link
-        function showAdAndOpenLink(url) {
-            // Show the ad (wait for user interaction)
-            const adContainer = document.getElementById('ad-container');
-            adContainer.style.display = 'block'; // Show ad placeholder
-            (adsbygoogle = window.adsbygoogle || []).push({});
-            
-            setTimeout(() => {
-                adContainer.style.display = 'none'; // Hide ad after 5 seconds
-                window.open(url, '_blank');
-            }, 5000); // Wait 5 seconds before opening the link
-        }
-
-        window.onload = () => loadButtons();
+        const database = getDatabase(app);
     </script>
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7099868100329345"></script>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7099868100329345" crossorigin="anonymous"></script>
 </head>
 <body>
-    <h1>Click a Button to Open a Link</h1>
-    <div id="buttons-container"></div>
-    
-    <!-- Ad Container -->
-    <div id="ad-container" style="display:none;">
-        <ins class="adsbygoogle"
-             style="display:block"
-             data-ad-client="ca-pub-7099868100329345"
-             data-ad-slot="XXXXXX"
-             data-ad-format="auto"></ins>
-    </div>
+    <h1>Watch Ad to Get Link</h1>
+    <button id="showAdButton">Watch Ad to Get Link</button>
+    <div id="adContainer"></div>
+    <div id="linkContainer"></div>
+
+    <script src="app.js"></script>
 </body>
 </html>
