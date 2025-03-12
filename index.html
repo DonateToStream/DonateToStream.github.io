@@ -5,12 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ad-Locked Links</title>
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7099868100329345" crossorigin="anonymous"></script>
-    <!-- Use type="module" for Firebase scripts -->
+
+    <!-- CSP: Allow scripts from 'self' and 'unsafe-inline', but avoid 'unsafe-eval' -->
+    <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline';">
+
+    <!-- Firebase SDK import with type="module" -->
     <script type="module">
-        // Import Firebase modules
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
-        
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js';
+        import { getDatabase, ref, set, onChildAdded } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js';
+
         const firebaseConfig = {
             apiKey: "AIzaSyBVx-V7DHGnWxwp5iqwrhPqBLnjf-frnT4",
             authDomain: "sigmasigma-57fca.firebaseapp.com",
@@ -21,13 +24,12 @@
             appId: "1:1071388845488:web:29b0b30532dd070a03e275"
         };
 
-        // Initialize Firebase
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
 
-        // Function to add a link to the database
+        // Add link to Firebase Database
         function addLinkToDatabase(name, url) {
-            const newLinkRef = ref(db, 'links/' + Date.now()); // Use current timestamp for unique key
+            const newLinkRef = ref(db, 'links/' + Date.now());
             set(newLinkRef, {
                 name: name,
                 url: url
@@ -38,7 +40,7 @@
             });
         }
 
-        // Listen for form submission
+        // Handle form submission
         function handleFormSubmit(event) {
             event.preventDefault();
             const name = document.getElementById('link-name').value;
@@ -53,10 +55,8 @@
             }
         }
 
-        // Listen for new links in the database and display them
-        import { onChildAdded, ref as dbRef } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
-        const linksRef = dbRef(db, "links");
-
+        // Listen for new links in the Firebase Realtime Database and display them
+        const linksRef = ref(db, "links");
         onChildAdded(linksRef, (snapshot) => {
             const data = snapshot.val();
             const linkItem = document.createElement("div");
@@ -68,7 +68,7 @@
 
         function showAdThenRedirect(url) {
             alert("Watch this ad to unlock the link!");
-            setTimeout(() => { window.location.href = url; }, 5000); // Simulating ad watch time
+            setTimeout(() => { window.location.href = url; }, 5000); // Simulate ad watch time
         }
     </script>
     <style>
@@ -83,7 +83,6 @@
     <h1>Ad-Locked Links</h1>
     <div id="links-container"></div>
 
-    <!-- Form to add a new link -->
     <h2>Add a New Link</h2>
     <form id="link-form" onsubmit="handleFormSubmit(event)">
         <input type="text" id="link-name" placeholder="Link Name" required />
