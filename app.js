@@ -6,7 +6,7 @@ adContainer.innerHTML = '<ins class="adsbygoogle" style="display:block" data-ad-
 document.getElementById('showAdButton').addEventListener('click', () => {
     // Show ad and get link after user watches the ad
     adContainer.style.display = 'block';
-    
+
     // Assuming the ad takes 30 seconds to watch
     setTimeout(() => {
         adContainer.style.display = 'none';
