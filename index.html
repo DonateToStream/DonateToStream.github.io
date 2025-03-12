@@ -3,78 +3,45 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Secure Game Portal</title>
-    <script type="module" src="script.js"></script>
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7099868100329345"
-        crossorigin="anonymous"></script>
+    <title>Ad-Locked Links</title>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7099868100329345" crossorigin="anonymous"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js"></script>
     <style>
-        body { font-family: Arial, sans-serif; text-align: center; background: #f4f4f4; margin: 0; }
-        .container { width: 350px; margin: auto; padding: 20px; background: white; border-radius: 8px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); margin-top: 50px; }
-        h2 { color: #333; }
-        input, button { width: 90%; padding: 10px; margin: 10px 0; border: 1px solid #ccc; border-radius: 5px; }
-        button { background: #007bff; color: white; cursor: pointer; }
-        button:hover { background: #0056b3; }
-        #game-container, #ad-container, #navbar { display: none; }
-        #game-frame { width: 100%; height: 400px; border: none; display: none; margin-top: 20px; }
-        .hidden { display: none; }
-
-        /* Navbar styles */
-        .navbar {
-            width: 100%;
-            background: #007bff;
-            padding: 10px 0;
-            display: flex;
-            justify-content: center;
-        }
-        .nav-links {
-            list-style: none;
-            padding: 0;
-            display: flex;
-            gap: 20px;
-        }
-        .nav-links li {
-            display: inline;
-        }
-        .nav-links a {
-            color: white;
-            text-decoration: none;
-            font-weight: bold;
-            padding: 8px 12px;
-        }
-        .nav-links a:hover {
-            background: #0056b3;
-            border-radius: 5px;
-        }
+        body { font-family: Arial, sans-serif; text-align: center; }
+        #links-container { max-width: 600px; margin: auto; overflow-y: auto; height: 400px; border: 1px solid #ccc; padding: 10px; }
+        .link-item { margin: 10px 0; padding: 10px; border: 1px solid #ddd; background: #f9f9f9; cursor: pointer; }
     </style>
 </head>
 <body>
-    <!-- Navbar -->
-    <nav id="navbar" class="navbar">
-        <ul class="nav-links">
-            <li><a href="#">Home</a></li>
-            <li><a href="#">Games</a></li>
-            <li><a href="#">Profile</a></li>
-            <li><a href="#" id="logout-btn">Log Out</a></li>
-        </ul>
-    </nav>
-
-    <div class="container">
-        <h2>Login to Play</h2>
-        <div id="auth-container">
-            <input type="email" id="email" placeholder="Email">
-            <input type="password" id="password" placeholder="Password">
-            <button id="signup-btn">Sign Up</button>
-            <button id="login-btn">Log In</button>
-            <button id="reset-btn">Forgot Password?</button>
-        </div>
-
-        <div id="game-container">
-            <button id="play-btn">Click to Play</button>
-            <div id="ad-container">
-                <p>Ad loading...</p>
-            </div>
-            <iframe id="game-frame" src="https://example.com" allowfullscreen></iframe>
-        </div>
-    </div>
+    <h1>Ad-Locked Links</h1>
+    <div id="links-container"></div>
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyBVx-V7DHGnWxwp5iqwrhPqBLnjf-frnT4",
+            authDomain: "sigmasigma-57fca.firebaseapp.com",
+            databaseURL: "https://sigmasigma-57fca-default-rtdb.firebaseio.com",
+            projectId: "sigmasigma-57fca",
+            storageBucket: "sigmasigma-57fca.appspot.com",
+            messagingSenderId: "1071388845488",
+            appId: "1:1071388845488:web:29b0b30532dd070a03e275"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database().ref("links");
+        
+        db.on("child_added", snapshot => {
+            const data = snapshot.val();
+            const linkItem = document.createElement("div");
+            linkItem.className = "link-item";
+            linkItem.textContent = data.name;
+            linkItem.onclick = () => showAdThenRedirect(data.url);
+            document.getElementById("links-container").appendChild(linkItem);
+        });
+        
+        function showAdThenRedirect(url) {
+            alert("Watch this ad to unlock the link!");
+            setTimeout(() => { window.location.href = url; }, 5000); // Simulating ad watch time
+        }
+    </script>
 </body>
 </html>
