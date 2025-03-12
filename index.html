@@ -3,91 +3,81 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ad-Locked Links</title>
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7099868100329345" crossorigin="anonymous"></script>
+    <title>Link Buttons with Ads</title>
+    <script type="module">
+        // Import Firebase SDKs
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-app.js";
+        import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-database.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-analytics.js";
 
-    <!-- Updated CSP to allow Firebase and other external scripts -->
-    <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.gstatic.com; object-src 'none';">
-
-    <!-- Firebase SDK import -->
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js"></script>
-
-    <style>
-        body { font-family: Arial, sans-serif; text-align: center; }
-        #links-container { max-width: 600px; margin: auto; overflow-y: auto; height: 400px; border: 1px solid #ccc; padding: 10px; }
-        .link-item { margin: 10px 0; padding: 10px; border: 1px solid #ddd; background: #f9f9f9; cursor: pointer; }
-        form { margin: 20px 0; }
-        input { padding: 10px; margin: 5px; width: 200px; }
-    </style>
-</head>
-<body>
-    <h1>Ad-Locked Links</h1>
-    <div id="links-container"></div>
-
-    <h2>Add a New Link</h2>
-    <form id="link-form" onsubmit="handleFormSubmit(event)">
-        <input type="text" id="link-name" placeholder="Link Name" required />
-        <input type="url" id="link-url" placeholder="Link URL" required />
-        <button type="submit">Add Link</button>
-    </form>
-
-    <script>
+        // Firebase configuration
         const firebaseConfig = {
             apiKey: "AIzaSyBVx-V7DHGnWxwp5iqwrhPqBLnjf-frnT4",
             authDomain: "sigmasigma-57fca.firebaseapp.com",
             databaseURL: "https://sigmasigma-57fca-default-rtdb.firebaseio.com",
             projectId: "sigmasigma-57fca",
-            storageBucket: "sigmasigma-57fca.appspot.com",
+            storageBucket: "sigmasigma-57fca.firebasestorage.app",
             messagingSenderId: "1071388845488",
-            appId: "1:1071388845488:web:29b0b30532dd070a03e275"
+            appId: "1:1071388845488:web:29b0b30532dd070a03e275",
+            measurementId: "G-JZJJ42L6KS"
         };
 
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.database().ref("links");
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+        const analytics = getAnalytics(app);
 
-        // Add link to Firebase Database
-        function addLinkToDatabase(name, url) {
-            const newLinkRef = db.child(Date.now().toString());
-            newLinkRef.set({
-                name: name,
-                url: url
-            }).then(() => {
-                alert("Link added successfully!");
+        // Fetch buttons from Firebase Realtime Database
+        function loadButtons() {
+            const buttonsContainer = document.getElementById('buttons-container');
+            const buttonsRef = ref(db, 'buttons');  // Path to your buttons data in the DB
+            
+            get(buttonsRef).then((snapshot) => {
+                if (snapshot.exists()) {
+                    const buttons = snapshot.val();
+                    for (const buttonId in buttons) {
+                        const buttonData = buttons[buttonId];
+                        const button = document.createElement("button");
+                        button.textContent = buttonData.name;
+                        button.onclick = () => showAdAndOpenLink(buttonData.url);
+                        buttonsContainer.appendChild(button);
+                    }
+                } else {
+                    console.log("No data available");
+                }
             }).catch((error) => {
-                alert("Error adding link: " + error.message);
+                console.error("Error getting data: ", error);
             });
         }
 
-        // Handle form submission
-        function handleFormSubmit(event) {
-            event.preventDefault();
-            const name = document.getElementById('link-name').value;
-            const url = document.getElementById('link-url').value;
-
-            if (name && url) {
-                addLinkToDatabase(name, url);
-                document.getElementById('link-name').value = '';
-                document.getElementById('link-url').value = '';
-            } else {
-                alert("Please fill in both fields.");
-            }
+        // Show Ad and then open link
+        function showAdAndOpenLink(url) {
+            // Show the ad (wait for user interaction)
+            const adContainer = document.getElementById('ad-container');
+            adContainer.style.display = 'block'; // Show ad placeholder
+            (adsbygoogle = window.adsbygoogle || []).push({});
+            
+            setTimeout(() => {
+                adContainer.style.display = 'none'; // Hide ad after 5 seconds
+                window.open(url, '_blank');
+            }, 5000); // Wait 5 seconds before opening the link
         }
 
-        // Listen for new links in the Firebase Realtime Database and display them
-        db.on("child_added", snapshot => {
-            const data = snapshot.val();
-            const linkItem = document.createElement("div");
-            linkItem.className = "link-item";
-            linkItem.textContent = data.name;
-            linkItem.onclick = () => showAdThenRedirect(data.url);
-            document.getElementById("links-container").appendChild(linkItem);
-        });
-
-        function showAdThenRedirect(url) {
-            alert("Watch this ad to unlock the link!");
-            setTimeout(() => { window.location.href = url; }, 5000); // Simulate ad watch time
-        }
+        window.onload = () => loadButtons();
     </script>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7099868100329345"></script>
+</head>
+<body>
+    <h1>Click a Button to Open a Link</h1>
+    <div id="buttons-container"></div>
+    
+    <!-- Ad Container -->
+    <div id="ad-container" style="display:none;">
+        <ins class="adsbygoogle"
+             style="display:block"
+             data-ad-client="ca-pub-7099868100329345"
+             data-ad-slot="XXXXXX"
+             data-ad-format="auto"></ins>
+    </div>
 </body>
 </html>
