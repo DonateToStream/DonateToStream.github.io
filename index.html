@@ -1,203 +1,38 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Your Game</title>
-    <!-- Firebase SDK -->
-    <script type="module">
-        import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js';
-        import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js';
-
-       // Initialize Firebase
-const firebaseConfig = {
-    apiKey: "AIzaSyBVx-V7DHGnWxwp5iqwrhPqBLnjf-frnT4",
-    authDomain: "sigmasigma-57fca.firebaseapp.com",
-    databaseURL: "https://sigmasigma-57fca-default-rtdb.firebaseio.com",
-    projectId: "sigmasigma-57fca",
-    storageBucket: "sigmasigma-57fca.firebasestorage.app",
-    messagingSenderId: "1071388845488",
-    appId: "1:1071388845488:web:bc50d819aeb446ef03e275",
-    measurementId: "G-CV4C8MK37C"
-};
-
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-
-        // Sign Up function
-       window.signUp = function() {
-    const email = document.getElementById('email').value;
-    const password = document.getElementById('password').value;
-
-    createUserWithEmailAndPassword(auth, email, password)
-        .then(() => {
-            window.location.reload(); // Reload to show the game section
-        })
-        .catch((error) => {
-            console.error("Error during sign up: ", error.code, error.message);
-            document.getElementById('error-message').innerText = `Error: ${error.message}`;
-        });
-};
-        // Log In function
-        window.logIn = function() {
-            const email = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
-
-            signInWithEmailAndPassword(auth, email, password)
-                .then(() => {
-                    window.location.reload(); // Reload to show the game section
-                })
-                .catch((error) => {
-                    document.getElementById('error-message').innerText = error.message;
-                });
-        };
-
-        // Show the game after ad
-        window.showAd = function() {
-            // Show an ad (Google AdSense or custom ad logic)
-            (adsbygoogle = window.adsbygoogle || []).push({});
-            
-            // After ad is displayed, show the game
-            setTimeout(() => {
-                document.getElementById('game-section').style.display = 'none';
-                document.getElementById('game-container').style.display = 'block';
-            }, 3000); // Adjust delay if necessary
-        };
-
-        // Handle user authentication state
-        auth.onAuthStateChanged((user) => {
-            if (user) {
-                document.getElementById('auth-form').style.display = 'none';
-                document.getElementById('game-section').style.display = 'block';
-            } else {
-                document.getElementById('auth-form').style.display = 'block';
-                document.getElementById('game-section').style.display = 'none';
-            }
-        });
-    </script>
-
-    <!-- AdSense -->
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7099868100329345" crossorigin="anonymous"></script>
-    
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #121212;
-            color: white;
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        #navbar {
-            background-color: #333;
-            padding: 10px;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            z-index: 100;
-        }
-
-        #navbar nav ul {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-            display: flex;
-            justify-content: center;
-        }
-
-        #navbar nav ul li {
-            margin: 0 15px;
-        }
-
-        #navbar nav ul li a {
-            text-decoration: none;
-            color: #00e676;
-            font-size: 18px;
-        }
-
-        #auth-form {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-        }
-
-        #auth-form input {
-            margin: 10px;
-            padding: 10px;
-            border: 2px solid #00e676;
-            background-color: #333;
-            color: white;
-            width: 300px;
-            border-radius: 5px;
-        }
-
-        #auth-form button {
-            padding: 10px 20px;
-            background-color: #00e676;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            margin: 10px;
-            cursor: pointer;
-        }
-
-        #game-section {
-            display: none;
-            text-align: center;
-            margin-top: 100px;
-        }
-
-        #game-container {
-            display: none;
-            margin-top: 20px;
-        }
-
-        #error-message {
-            color: red;
-            margin-top: 10px;
-        }
-
-        button:disabled {
-            background-color: #555;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign Up and Game</title>
+  <link rel="stylesheet" href="styles.css">
+  <script type="module" src="app.js" defer></script>
 </head>
 <body>
-
-    <!-- Navigation Bar -->
-    <div id="navbar">
-        <nav>
-            <ul>
-                <li><a href="/">Home</a></li>
-                <li><a href="/game">Game</a></li>
-            </ul>
-        </nav>
+  <!-- Main Content -->
+  <div id="main-content">
+    <!-- Click to Play Section -->
+    <div id="click-to-play">
+      <button id="play-btn">Click to Play</button>
     </div>
 
-    <!-- Authentication Form -->
-    <div id="auth-form">
-        <h2>Sign Up / Login</h2>
-        <input type="email" id="email" placeholder="Email" required><br>
-        <input type="password" id="password" placeholder="Password" required><br>
-        <button onclick="signUp()">Sign Up</button>
-        <button onclick="logIn()">Log In</button>
-        <div id="error-message"></div>
+    <!-- Sign-Up Form -->
+    <div id="sign-up-form" class="centered-form">
+      <h2>Sign Up</h2>
+      <input type="email" id="email" placeholder="Email" required />
+      <input type="password" id="password" placeholder="Password" required />
+      <button onclick="signUp()">Sign Up</button>
+      <div id="error-message" style="color: red;"></div>
     </div>
 
-    <!-- "Click to Play" Button -->
-    <div id="game-section">
-        <button onclick="showAd()">Click to Play</button>
+    <!-- Game URL Display -->
+    <div id="game-url" class="hidden">
+      <p>Click to play the game: <a href="https://gswitch3.github.io/g77/drive-mad" target="_blank">Play Game</a></p>
     </div>
+  </div>
 
-    <!-- Game Embed (Initially hidden until after ad) -->
-    <div id="game-container">
-        <iframe src="https://gswitch3.github.io/g77/drive-mad" width="100%" height="600"></iframe>
-    </div>
-
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-analytics.js"></script>
 </body>
 </html>
