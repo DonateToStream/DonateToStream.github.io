@@ -1,4 +1,4 @@
-// Initialize Firebase
+// Firebase configuration
 const firebaseConfig = {
   apiKey: "AIzaSyBVx-V7DHGnWxwp5iqwrhPqBLnjf-frnT4",
   authDomain: "sigmasigma-57fca.firebaseapp.com",
@@ -10,7 +10,7 @@ const firebaseConfig = {
   measurementId: "G-JZJJ42L6KS"
 };
 
-// Initialize Firebase App
+// Initialize Firebase
 firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 
