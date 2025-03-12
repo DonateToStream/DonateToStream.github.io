@@ -5,18 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ad-Locked Links</title>
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7099868100329345" crossorigin="anonymous"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js"></script>
-    <style>
-        body { font-family: Arial, sans-serif; text-align: center; }
-        #links-container { max-width: 600px; margin: auto; overflow-y: auto; height: 400px; border: 1px solid #ccc; padding: 10px; }
-        .link-item { margin: 10px 0; padding: 10px; border: 1px solid #ddd; background: #f9f9f9; cursor: pointer; }
-    </style>
-</head>
-<body>
-    <h1>Ad-Locked Links</h1>
-    <div id="links-container"></div>
-    <script>
+    <!-- Use type="module" for Firebase scripts -->
+    <script type="module">
+        // Import Firebase modules
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getDatabase, ref, onChildAdded } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+        
         const firebaseConfig = {
             apiKey: "AIzaSyBVx-V7DHGnWxwp5iqwrhPqBLnjf-frnT4",
             authDomain: "sigmasigma-57fca.firebaseapp.com",
@@ -26,10 +20,14 @@
             messagingSenderId: "1071388845488",
             appId: "1:1071388845488:web:29b0b30532dd070a03e275"
         };
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.database().ref("links");
-        
-        db.on("child_added", snapshot => {
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+        const linksRef = ref(db, "links");
+
+        // Listen for new links in the database
+        onChildAdded(linksRef, (snapshot) => {
             const data = snapshot.val();
             const linkItem = document.createElement("div");
             linkItem.className = "link-item";
@@ -37,11 +35,20 @@
             linkItem.onclick = () => showAdThenRedirect(data.url);
             document.getElementById("links-container").appendChild(linkItem);
         });
-        
+
         function showAdThenRedirect(url) {
             alert("Watch this ad to unlock the link!");
             setTimeout(() => { window.location.href = url; }, 5000); // Simulating ad watch time
         }
     </script>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; }
+        #links-container { max-width: 600px; margin: auto; overflow-y: auto; height: 400px; border: 1px solid #ccc; padding: 10px; }
+        .link-item { margin: 10px 0; padding: 10px; border: 1px solid #ddd; background: #f9f9f9; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <h1>Ad-Locked Links</h1>
+    <div id="links-container"></div>
 </body>
 </html>
