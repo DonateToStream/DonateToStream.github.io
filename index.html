@@ -6,14 +6,33 @@
     <title>Ad-Locked Links</title>
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7099868100329345" crossorigin="anonymous"></script>
 
-    <!-- Updated CSP to allow unsafe-eval and Firebase scripts -->
-    <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.gstatic.com;">
+    <!-- Updated CSP to allow Firebase and other external scripts -->
+    <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.gstatic.com; object-src 'none';">
 
-    <!-- Firebase SDK import with type="module" -->
-    <script type="module">
-        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js';
-        import { getDatabase, ref, set, onChildAdded } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js';
+    <!-- Firebase SDK import -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js"></script>
 
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; }
+        #links-container { max-width: 600px; margin: auto; overflow-y: auto; height: 400px; border: 1px solid #ccc; padding: 10px; }
+        .link-item { margin: 10px 0; padding: 10px; border: 1px solid #ddd; background: #f9f9f9; cursor: pointer; }
+        form { margin: 20px 0; }
+        input { padding: 10px; margin: 5px; width: 200px; }
+    </style>
+</head>
+<body>
+    <h1>Ad-Locked Links</h1>
+    <div id="links-container"></div>
+
+    <h2>Add a New Link</h2>
+    <form id="link-form" onsubmit="handleFormSubmit(event)">
+        <input type="text" id="link-name" placeholder="Link Name" required />
+        <input type="url" id="link-url" placeholder="Link URL" required />
+        <button type="submit">Add Link</button>
+    </form>
+
+    <script>
         const firebaseConfig = {
             apiKey: "AIzaSyBVx-V7DHGnWxwp5iqwrhPqBLnjf-frnT4",
             authDomain: "sigmasigma-57fca.firebaseapp.com",
@@ -24,13 +43,13 @@
             appId: "1:1071388845488:web:29b0b30532dd070a03e275"
         };
 
-        const app = initializeApp(firebaseConfig);
-        const db = getDatabase(app);
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database().ref("links");
 
         // Add link to Firebase Database
         function addLinkToDatabase(name, url) {
-            const newLinkRef = ref(db, 'links/' + Date.now());
-            set(newLinkRef, {
+            const newLinkRef = db.child(Date.now().toString());
+            newLinkRef.set({
                 name: name,
                 url: url
             }).then(() => {
@@ -56,8 +75,7 @@
         }
 
         // Listen for new links in the Firebase Realtime Database and display them
-        const linksRef = ref(db, "links");
-        onChildAdded(linksRef, (snapshot) => {
+        db.on("child_added", snapshot => {
             const data = snapshot.val();
             const linkItem = document.createElement("div");
             linkItem.className = "link-item";
@@ -71,23 +89,5 @@
             setTimeout(() => { window.location.href = url; }, 5000); // Simulate ad watch time
         }
     </script>
-    <style>
-        body { font-family: Arial, sans-serif; text-align: center; }
-        #links-container { max-width: 600px; margin: auto; overflow-y: auto; height: 400px; border: 1px solid #ccc; padding: 10px; }
-        .link-item { margin: 10px 0; padding: 10px; border: 1px solid #ddd; background: #f9f9f9; cursor: pointer; }
-        form { margin: 20px 0; }
-        input { padding: 10px; margin: 5px; width: 200px; }
-    </style>
-</head>
-<body>
-    <h1>Ad-Locked Links</h1>
-    <div id="links-container"></div>
-
-    <h2>Add a New Link</h2>
-    <form id="link-form" onsubmit="handleFormSubmit(event)">
-        <input type="text" id="link-name" placeholder="Link Name" required />
-        <input type="url" id="link-url" placeholder="Link URL" required />
-        <button type="submit">Add Link</button>
-    </form>
 </body>
 </html>
