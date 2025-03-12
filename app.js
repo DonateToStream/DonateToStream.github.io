@@ -1,8 +1,3 @@
-// Import necessary Firebase functions
-import { initializeApp } from "firebase/app";
-import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
-import { getAnalytics } from "firebase/analytics";
-
 // Firebase Configuration
 const firebaseConfig = {
   apiKey: "AIzaSyBVx-V7DHGnWxwp5iqwrhPqBLnjf-frnT4",
@@ -16,18 +11,16 @@ const firebaseConfig = {
 };
 
 // Initialize Firebase
-const app = initializeApp(firebaseConfig);
-const analytics = getAnalytics(app);
-
-// Firebase Authentication instance
-const auth = getAuth(app);
+const app = firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+const analytics = firebase.analytics(app);
 
 // Sign-Up function
 function signUp() {
   const email = document.getElementById('email').value;
   const password = document.getElementById('password').value;
 
-  createUserWithEmailAndPassword(auth, email, password)
+  auth.createUserWithEmailAndPassword(email, password)
     .then((userCredential) => {
       // Successfully signed up
       console.log("User signed up:", userCredential.user);
