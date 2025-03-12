@@ -1,36 +1,43 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Sign Up and Game</title>
-  <link rel="stylesheet" href="styles.css">
-
-  <!-- Firebase SDKs -->
-  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-analytics.js"></script>
-
-  <!-- Your custom app.js script -->
-  <script src="app.js" defer></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Secure Game Access</title>
+    <script type="module" src="script.js"></script>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7099868100329345"
+        crossorigin="anonymous"></script>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; margin-top: 50px; }
+        .container { width: 300px; margin: auto; }
+        input, button { display: block; margin: 10px auto; padding: 10px; }
+        #game-container, #ad-container { display: none; }
+    </style>
 </head>
 <body>
-  <div id="main-content">
-    <div id="click-to-play">
-      <button id="play-btn">Click to Play</button>
-    </div>
+    <div class="container">
+        <h2>Login to Play</h2>
+        <div id="auth-container">
+            <input type="email" id="email" placeholder="Email">
+            <input type="password" id="password" placeholder="Password">
+            <button id="signup-btn">Sign Up</button>
+            <button id="login-btn">Log In</button>
+        </div>
 
-    <div id="sign-up-form" class="centered-form">
-      <h2>Sign Up</h2>
-      <input type="email" id="email" placeholder="Email" required />
-      <input type="password" id="password" placeholder="Password" required />
-      <button id="sign-up-btn">Sign Up</button>
-      <div id="error-message" style="color: red;"></div>
+        <div id="game-container">
+            <button id="play-btn">Click to Play</button>
+            <div id="ad-container">
+                <p>Ad loading...</p>
+                <!-- AdSense Ad -->
+                <script>
+                    setTimeout(() => { document.getElementById('game-content').style.display = 'block'; }, 5000);
+                </script>
+            </div>
+            <div id="game-content" style="display: none;">
+                <h3>Game starts now!</h3>
+            </div>
+        </div>
+        <button id="logout-btn" style="display:none;">Log Out</button>
     </div>
-
-    <div id="game-url" class="hidden">
-      <p>Click to play the game: <a href="https://gswitch3.github.io/g77/drive-mad" target="_blank">Play Game</a></p>
-    </div>
-  </div>
 </body>
 </html>
