@@ -5,14 +5,103 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Your Game</title>
     <!-- Firebase SDK -->
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js"></script>
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js';
+        import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js';
+    </script>
     
     <!-- AdSense -->
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7099868100329345" crossorigin="anonymous"></script>
+    
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #121212;
+            color: white;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        #navbar {
+            background-color: #333;
+            padding: 10px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 100;
+        }
+
+        #navbar nav ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+        }
+
+        #navbar nav ul li {
+            margin: 0 15px;
+        }
+
+        #navbar nav ul li a {
+            text-decoration: none;
+            color: #00e676;
+            font-size: 18px;
+        }
+
+        #auth-form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+
+        #auth-form input {
+            margin: 10px;
+            padding: 10px;
+            border: 2px solid #00e676;
+            background-color: #333;
+            color: white;
+            width: 300px;
+            border-radius: 5px;
+        }
+
+        #auth-form button {
+            padding: 10px 20px;
+            background-color: #00e676;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            margin: 10px;
+            cursor: pointer;
+        }
+
+        #game-section {
+            display: none;
+            text-align: center;
+            margin-top: 100px;
+        }
+
+        #game-container {
+            display: none;
+            margin-top: 20px;
+        }
+
+        #error-message {
+            color: red;
+            margin-top: 10px;
+        }
+
+        button:disabled {
+            background-color: #555;
+        }
+    </style>
 </head>
 <body>
+
     <!-- Navigation Bar -->
     <div id="navbar">
         <nav>
@@ -25,7 +114,7 @@
     </div>
 
     <!-- Authentication Form -->
-    <div id="auth-form" class="auth-form">
+    <div id="auth-form">
         <h2>Sign Up / Login</h2>
         <input type="email" id="email" placeholder="Email" required><br>
         <input type="password" id="password" placeholder="Password" required><br>
@@ -35,15 +124,79 @@
     </div>
 
     <!-- "Click to Play" Button -->
-    <div id="game-section" style="display:none;">
+    <div id="game-section">
         <button onclick="showAd()">Click to Play</button>
     </div>
 
     <!-- Game Embed (Initially hidden until after ad) -->
-    <div id="game-container" style="display:none;">
+    <div id="game-container">
         <iframe src="YOUR_GAME_URL" width="100%" height="600"></iframe>
     </div>
 
-    <script src="app.js"></script>
+    <script type="module">
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "YOUR_API_KEY",
+            authDomain: "YOUR_AUTH_DOMAIN",
+            projectId: "YOUR_PROJECT_ID",
+            storageBucket: "YOUR_STORAGE_BUCKET",
+            messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+            appId: "YOUR_APP_ID"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+
+        // Authentication functions
+        function signUp() {
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            createUserWithEmailAndPassword(auth, email, password)
+                .then(() => {
+                    window.location.reload(); // Reload to show the game section
+                })
+                .catch((error) => {
+                    document.getElementById('error-message').innerText = error.message;
+                });
+        }
+
+        function logIn() {
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            signInWithEmailAndPassword(auth, email, password)
+                .then(() => {
+                    window.location.reload(); // Reload to show the game section
+                })
+                .catch((error) => {
+                    document.getElementById('error-message').innerText = error.message;
+                });
+        }
+
+        // Show the game after ad
+        function showAd() {
+            // Show an ad (Google AdSense or custom ad logic)
+            (adsbygoogle = window.adsbygoogle || []).push({});
+            
+            // After ad is displayed, show the game
+            setTimeout(() => {
+                document.getElementById('game-section').style.display = 'none';
+                document.getElementById('game-container').style.display = 'block';
+            }, 3000); // Adjust delay if necessary
+        }
+
+        // Handle user authentication state
+        auth.onAuthStateChanged((user) => {
+            if (user) {
+                document.getElementById('auth-form').style.display = 'none';
+                document.getElementById('game-section').style.display = 'block';
+            } else {
+                document.getElementById('auth-form').style.display = 'block';
+                document.getElementById('game-section').style.display = 'none';
+            }
+        });
+    </script>
 </body>
 </html>
