@@ -1,4 +1,4 @@
-// Firebase Configuration
+// Initialize Firebase
 const firebaseConfig = {
   apiKey: "AIzaSyBVx-V7DHGnWxwp5iqwrhPqBLnjf-frnT4",
   authDomain: "sigmasigma-57fca.firebaseapp.com",
@@ -10,13 +10,12 @@ const firebaseConfig = {
   measurementId: "G-JZJJ42L6KS"
 };
 
-// Initialize Firebase
-const app = firebase.initializeApp(firebaseConfig);
+// Initialize Firebase App
+firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
-const analytics = firebase.analytics(app);
 
 // Sign-Up function
-function signUp() {
+document.getElementById('sign-up-btn').addEventListener('click', function() {
   const email = document.getElementById('email').value;
   const password = document.getElementById('password').value;
 
@@ -24,18 +23,17 @@ function signUp() {
     .then((userCredential) => {
       // Successfully signed up
       console.log("User signed up:", userCredential.user);
-      // Show the game URL and hide the sign-up form
+      // Hide the sign-up form and show the game URL
       document.getElementById('sign-up-form').style.display = "none";
       document.getElementById('game-url').style.display = "block";
     })
     .catch((error) => {
       // Handle errors
-      const errorCode = error.code;
       const errorMessage = error.message;
-      console.error("Error during sign-up:", errorCode, errorMessage);
+      console.error("Error during sign-up:", errorMessage);
       document.getElementById('error-message').innerText = `Error: ${errorMessage}`;
     });
-}
+});
 
 // Handle Play Button Click
 document.getElementById('play-btn').addEventListener('click', function() {
