@@ -5,29 +5,29 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Sign Up and Game</title>
   <link rel="stylesheet" href="styles.css">
+
+  <!-- Firebase SDKs -->
   <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-analytics.js"></script>
+
+  <!-- Your custom app.js script -->
   <script src="app.js" defer></script>
 </head>
 <body>
-  <!-- Main Content -->
   <div id="main-content">
-    <!-- Click to Play Section -->
     <div id="click-to-play">
       <button id="play-btn">Click to Play</button>
     </div>
 
-    <!-- Sign-Up Form -->
     <div id="sign-up-form" class="centered-form">
       <h2>Sign Up</h2>
       <input type="email" id="email" placeholder="Email" required />
       <input type="password" id="password" placeholder="Password" required />
-      <button onclick="signUp()">Sign Up</button>
+      <button id="sign-up-btn">Sign Up</button>
       <div id="error-message" style="color: red;"></div>
     </div>
 
-    <!-- Game URL Display -->
     <div id="game-url" class="hidden">
       <p>Click to play the game: <a href="https://gswitch3.github.io/g77/drive-mad" target="_blank">Play Game</a></p>
     </div>
