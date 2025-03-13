@@ -9,7 +9,7 @@
     <style>
         body { text-align: center; font-family: Arial, sans-serif; padding: 20px; }
         button { padding: 10px 20px; font-size: 16px; margin: 10px; cursor: pointer; }
-        #ad-container { display: none; margin-top: 20px; }
+        #ad-container { display: none; width: 300px; height: 250px; margin-top: 20px; }
         #persistent-ad { position: fixed; right: 10px; top: 50%; transform: translateY(-50%); }
     </style>
 </head>
@@ -45,7 +45,12 @@
 
     <script>
         function showAd(targetUrl) {
+            // Ensure the ad container is visible
             document.getElementById('ad-container').style.display = 'block';
+
+            // Trigger resize to ensure ad has space to load
+            window.dispatchEvent(new Event('resize'));
+
             setTimeout(() => {
                 window.location.href = targetUrl;
             }, 7000); // 7-second delay before redirect
