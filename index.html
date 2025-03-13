@@ -10,12 +10,26 @@
         body { text-align: center; font-family: Arial, sans-serif; padding: 20px; }
         button { padding: 10px 20px; font-size: 16px; margin: 10px; cursor: pointer; }
         #ad-container { display: none; margin-top: 20px; }
+        #persistent-ad { position: fixed; right: 10px; top: 50%; transform: translateY(-50%); }
     </style>
 </head>
 <body>
     <h1>Choose an Option</h1>
     <button onclick="showAd('https://example.com')">Visit Example</button>
     <button onclick="showAd('https://another-site.com')">Visit Another Site</button>
+    
+    <!-- Persistent Ad on the Right -->
+    <div id="persistent-ad">
+        <ins class="adsbygoogle"
+            style="display:block"
+            data-ad-client="ca-pub-7099868100329345"
+            data-ad-slot="7622435183"
+            data-ad-format="auto"
+            data-full-width-responsive="true"></ins>
+        <script>
+            (adsbygoogle = window.adsbygoogle || []).push({});
+        </script>
+    </div>
     
     <div id="ad-container">
         <p>Viewing Ad... Please wait</p>
