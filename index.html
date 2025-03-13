@@ -3,37 +3,39 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Watch Ad to Get Link</title>
-    <script type="module">
-        // Firebase configuration
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-app.js";
-        import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-analytics.js";
-        import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-database.js";
-
-        const firebaseConfig = {
-            apiKey: "AIzaSyBVx-V7DHGnWxwp5iqwrhPqBLnjf-frnT4",
-            authDomain: "sigmasigma-57fca.firebaseapp.com",
-            databaseURL: "https://sigmasigma-57fca-default-rtdb.firebaseio.com",
-            projectId: "sigmasigma-57fca",
-            storageBucket: "sigmasigma-57fca.firebasestorage.app",
-            messagingSenderId: "1071388845488",
-            appId: "1:1071388845488:web:29b0b30532dd070a03e275",
-            measurementId: "G-JZJJ42L6KS"
-        };
-
-        // Initialize Firebase
-        const app = initializeApp(firebaseConfig);
-        const analytics = getAnalytics(app);
-        const database = getDatabase(app);
-    </script>
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7099868100329345" crossorigin="anonymous"></script>
+    <title>Ad-Powered Redirect</title>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7099868100329345"
+     crossorigin="anonymous"></script>
+    <style>
+        body { text-align: center; font-family: Arial, sans-serif; padding: 20px; }
+        button { padding: 10px 20px; font-size: 16px; margin: 10px; cursor: pointer; }
+        #ad-container { display: none; margin-top: 20px; }
+    </style>
 </head>
 <body>
-    <h1>Watch Ad to Get Link</h1>
-    <button id="showAdButton">Watch Ad to Get Link</button>
-    <div id="adContainer"></div>
-    <div id="linkContainer"></div>
+    <h1>Choose an Option</h1>
+    <button onclick="showAd('https://example.com')">Visit Example</button>
+    <button onclick="showAd('https://another-site.com')">Visit Another Site</button>
+    
+    <div id="ad-container">
+        <p>Viewing Ad... Please wait</p>
+        <ins class="adsbygoogle"
+            style="display:block"
+            data-ad-client="ca-pub-7099868100329345"
+            data-ad-slot="XXXXXXXXXX"
+            data-ad-format="auto"></ins>
+        <script>
+            (adsbygoogle = window.adsbygoogle || []).push({});
+        </script>
+    </div>
 
-    <script src="app.js"></script>
+    <script>
+        function showAd(targetUrl) {
+            document.getElementById('ad-container').style.display = 'block';
+            setTimeout(() => {
+                window.location.href = targetUrl;
+            }, 7000); // 7-second delay before redirect
+        }
+    </script>
 </body>
 </html>
