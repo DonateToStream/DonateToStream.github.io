@@ -146,14 +146,32 @@
         }
 
         function changeEmail() {
-            const user = auth.currentUser;
-            const newEmail = document.getElementById("newEmail").value;
-            if (user) {
-                user.updateEmail(newEmail)
-                .then(() => alert("Email updated!"))
-                .catch(error => alert(error.message));
-            }
+    const user = auth.currentUser;
+    const newEmail = document.getElementById("newEmail").value;
+
+    if (user) {
+        // Ask the user to re-enter their password before changing email
+        const password = prompt("Please enter your password to confirm:");
+
+        if (!password) {
+            alert("Password is required to change email.");
+            return;
         }
+
+        const credential = firebase.auth.EmailAuthProvider.credential(user.email, password);
+
+        // Re-authenticate the user
+        user.reauthenticateWithCredential(credential).then(() => {
+            // Now update the email
+            user.updateEmail(newEmail).then(() => {
+                alert("Email updated successfully! Please verify your new email.");
+                user.sendEmailVerification(); // Send a verification email for the new address
+            }).catch(error => alert("Error updating email: " + error.message));
+        }).catch(error => alert("Re-authentication failed: " + error.message));
+    } else {
+        alert("No user is logged in.");
+    }
+}
 
         function changePassword() {
             const user = auth.currentUser;
