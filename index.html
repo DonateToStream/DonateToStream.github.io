@@ -1,180 +1,94 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Trade Ad Site</title>
-  <!-- Firebase SDK -->
-  <script src="https://www.gstatic.com/firebasejs/9.0.2/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.0.2/firebase-auth.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.0.2/firebase-database.js"></script>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background-color: #f0f0f0;
-      margin: 0;
-      padding: 0;
-    }
-    header {
-      background-color: #232323;
-      color: white;
-      padding: 10px;
-      text-align: center;
-    }
-    nav {
-      display: flex;
-      justify-content: center;
-      background-color: #333;
-      padding: 10px;
-    }
-    nav a {
-      color: white;
-      text-decoration: none;
-      padding: 10px 20px;
-      margin: 0 10px;
-    }
-    nav a:hover {
-      background-color: #444;
-    }
-    .container {
-      width: 80%;
-      margin: 20px auto;
-      padding: 20px;
-      background-color: white;
-      border-radius: 5px;
-      box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-    }
-    .form-group {
-      margin: 15px 0;
-    }
-    input, button {
-      padding: 10px;
-      width: 100%;
-      font-size: 16px;
-    }
-    button {
-      background-color: #28a745;
-      color: white;
-      border: none;
-      cursor: pointer;
-      margin-top: 10px;
-    }
-    button:hover {
-      background-color: #218838;
-    }
-    .error-message {
-      color: red;
-      font-size: 14px;
-      margin-top: 10px;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ad-Supported GitHub Pages Site</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            display: flex;
+            width: 100%;
+            max-width: 1200px;
+            min-height: 80vh;
+            margin: 20px 0;
+        }
+        .ad-left, .ad-right {
+            width: 160px;
+            min-height: 600px;
+            background-color: #f0f0f0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .content {
+            flex: 1;
+            padding: 20px;
+            text-align: center;
+            background: white;
+        }
+        .ad-bottom {
+            width: 100%;
+            min-height: 90px;
+            background-color: #f0f0f0;
+            text-align: center;
+            margin-top: 20px;
+        }
+    </style>
+    <!-- Google AdSense Script -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7099868100329345" crossorigin="anonymous"></script>
 </head>
 <body>
-  <header>
-    <h1>Trade Ad Site</h1>
-  </header>
+    <div class="container">
+        <div class="ad-left">
+            <!-- Left Ad -->
+            <ins class="adsbygoogle"
+                 style="display:block"
+                 data-ad-client="ca-pub-7099868100329345"
+                 data-ad-slot="1541076717"
+                 data-ad-format="auto"
+                 data-full-width-responsive="true"></ins>
+            <script>
+                 (adsbygoogle = window.adsbygoogle || []).push({});
+            </script>
+        </div>
 
-  <nav>
-    <a href="#" id="createTradeButton">Create Trade</a>
-    <a href="#" id="loginButton">Login</a>
-  </nav>
+        <div class="content">
+            <h1>Welcome to My Site</h1>
+            <p>This is a GitHub Pages site with ads.</p>
+        </div>
 
-  <div class="container">
-    <!-- Login Form -->
-    <div id="loginForm" class="form-group">
-      <input type="text" id="username" placeholder="Enter your username" />
-      <button onclick="loginUser()">Login</button>
-      <div class="error-message" id="loginError"></div>
+        <div class="ad-right">
+            <!-- Right Ad -->
+            <ins class="adsbygoogle"
+                 style="display:block"
+                 data-ad-client="ca-pub-7099868100329345"
+                 data-ad-slot="2854158385"
+                 data-ad-format="auto"
+                 data-full-width-responsive="true"></ins>
+            <script>
+                 (adsbygoogle = window.adsbygoogle || []).push({});
+            </script>
+        </div>
     </div>
 
-    <!-- Trade Form -->
-    <div id="tradeForm" style="display:none;">
-      <input type="text" id="itemID" placeholder="Item ID" />
-      <input type="text" id="itemDescription" placeholder="Item Description" />
-      <input type="text" id="robux" placeholder="Robux Value" />
-      <button onclick="createTrade()">Create Trade</button>
-      <div class="error-message" id="tradeError"></div>
+    <div class="ad-bottom">
+        <!-- Bottom Ad -->
+        <ins class="adsbygoogle"
+             style="display:block"
+             data-ad-client="ca-pub-7099868100329345"
+             data-ad-slot="4050887652"
+             data-ad-format="auto"
+             data-full-width-responsive="true"></ins>
+        <script>
+             (adsbygoogle = window.adsbygoogle || []).push({});
+        </script>
     </div>
-  </div>
-
-  <!-- Firebase SDK -->
-  <script>
-    // Initialize Firebase
-    const firebaseConfig = {
-      apiKey: "AIzaSyBxm9scK9bWxue782r8w2xNR_thS1y9-q4",
-      authDomain: "dhjrjtdzjg.firebaseapp.com",
-      databaseURL: "https://dhjrjtdzjg-default-rtdb.firebaseio.com",
-      projectId: "dhjrjtdzjg",
-      storageBucket: "dhjrjtdzjg.appspot.com",
-      messagingSenderId: "548960975194",
-      appId: "1:548960975194:web:fc9596a8cae353883d9b63",
-      measurementId: "G-BPJJSQV4Z6"
-    };
-    const app = firebase.initializeApp(firebaseConfig);
-    const auth = firebase.auth();
-    const database = firebase.database();
-
-    let currentUser = null;
-
-    // Login function
-    function loginUser() {
-      const username = document.getElementById("username").value;
-      if (username) {
-        auth.signInAnonymously().then(() => {
-          currentUser = username;
-          document.getElementById("loginForm").style.display = "none";
-          document.getElementById("tradeForm").style.display = "block";
-        }).catch((error) => {
-          document.getElementById("loginError").innerText = "Failed to login. Try again.";
-        });
-      } else {
-        document.getElementById("loginError").innerText = "Please enter a username.";
-      }
-    }
-
-    // Create Trade function
-    function createTrade() {
-      const itemID = document.getElementById("itemID").value;
-      const itemDescription = document.getElementById("itemDescription").value;
-      const robux = document.getElementById("robux").value;
-
-      if (itemID && itemDescription && robux) {
-        const tradeData = {
-          itemID: itemID,
-          itemDescription: itemDescription,
-          robux: robux,
-          owner: currentUser
-        };
-
-        // Push trade data to Firebase
-        const tradeRef = database.ref("trades");
-        tradeRef.push(tradeData).then(() => {
-          alert("Trade created successfully!");
-          document.getElementById("itemID").value = "";
-          document.getElementById("itemDescription").value = "";
-          document.getElementById("robux").value = "";
-        }).catch((error) => {
-          document.getElementById("tradeError").innerText = "Failed to create trade. Try again.";
-        });
-      } else {
-        document.getElementById("tradeError").innerText = "Please fill in all fields.";
-      }
-    }
-
-    // Event listeners
-    document.getElementById("createTradeButton").addEventListener("click", function() {
-      if (currentUser) {
-        document.getElementById("loginForm").style.display = "none";
-        document.getElementById("tradeForm").style.display = "block";
-      } else {
-        alert("You must log in first!");
-      }
-    });
-
-    document.getElementById("loginButton").addEventListener("click", function() {
-      document.getElementById("loginForm").style.display = "block";
-      document.getElementById("tradeForm").style.display = "none";
-    });
-  </script>
 </body>
 </html>
