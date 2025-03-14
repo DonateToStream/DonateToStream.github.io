@@ -3,11 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login / Signup</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>Firebase Auth Site</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; margin: 0; }
+        .container { max-width: 300px; margin: auto; padding-top: 50px; }
+        input, button { display: block; margin: 10px auto; padding: 8px; width: 80%; }
+        nav { background: #333; padding: 10px; }
+        nav ul { list-style-type: none; padding: 0; margin: 0; }
+        nav ul li { display: inline; margin: 0 15px; color: white; cursor: pointer; }
+        .settings-icon { position: absolute; top: 10px; right: 10px; cursor: pointer; color: white; }
+        .hidden { display: none; }
+    </style>
 </head>
 <body>
-    <div class="container">
+
+    <div id="auth-container" class="container">
         <h2>Login / Signup</h2>
         <input type="email" id="email" placeholder="Email">
         <input type="password" id="password" placeholder="Password">
@@ -17,9 +27,120 @@
         <p id="message"></p>
     </div>
 
+    <div id="home-container" class="hidden">
+        <nav>
+            <ul>
+                <li>Tab 1</li>
+                <li>Tab 2</li>
+                <li>Tab 3</li>
+                <li>Tab 4</li>
+                <li>Tab 5</li>
+            </ul>
+            <div class="settings-icon" onclick="toggleSettings()">⚙ Settings</div>
+        </nav>
+        <h1>Welcome!</h1>
+        <button onclick="logout()">Logout</button>
+
+        <div id="settings-container" class="hidden">
+            <h2>Settings</h2>
+            <input type="email" id="newEmail" placeholder="New Email">
+            <button onclick="changeEmail()">Change Email</button>
+            <input type="password" id="newPassword" placeholder="New Password">
+            <button onclick="changePassword()">Change Password</button>
+        </div>
+    </div>
+
+    <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-auth.js"></script>
-    <script src="firebase-config.js"></script>
-    <script src="script.js"></script>
+
+    <script>
+        // Firebase Config
+        const firebaseConfig = {
+            apiKey: "AIzaSyBxm9scK9bWxue782r8w2xNR_thS1y9-q4",
+            authDomain: "dhjrjtdzjg.firebaseapp.com",
+            databaseURL: "https://dhjrjtdzjg-default-rtdb.firebaseio.com",
+            projectId: "dhjrjtdzjg",
+            storageBucket: "dhjrjtdzjg.firebasestorage.app",
+            messagingSenderId: "548960975194",
+            appId: "1:548960975194:web:fc9596a8cae353883d9b63",
+            measurementId: "G-BPJJSQV4Z6"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+
+        // UI Handling
+        function showHome() {
+            document.getElementById("auth-container").classList.add("hidden");
+            document.getElementById("home-container").classList.remove("hidden");
+        }
+
+        function showAuth() {
+            document.getElementById("auth-container").classList.remove("hidden");
+            document.getElementById("home-container").classList.add("hidden");
+        }
+
+        function toggleSettings() {
+            document.getElementById("settings-container").classList.toggle("hidden");
+        }
+
+        // Authentication Functions
+        function signup() {
+            const email = document.getElementById("email").value;
+            const password = document.getElementById("password").value;
+            
+            auth.createUserWithEmailAndPassword(email, password)
+            .then(() => showHome())
+            .catch(error => document.getElementById("message").textContent = error.message);
+        }
+
+        function login() {
+            const email = document.getElementById("email").value;
+            const password = document.getElementById("password").value;
+            
+            auth.signInWithEmailAndPassword(email, password)
+            .then(() => showHome())
+            .catch(error => document.getElementById("message").textContent = error.message);
+        }
+
+        function logout() {
+            auth.signOut().then(() => showAuth());
+        }
+
+        function resetPassword() {
+            const email = document.getElementById("email").value;
+            auth.sendPasswordResetEmail(email)
+            .then(() => alert("Password reset email sent!"))
+            .catch(error => alert(error.message));
+        }
+
+        function changeEmail() {
+            const user = auth.currentUser;
+            const newEmail = document.getElementById("newEmail").value;
+            if (user) {
+                user.updateEmail(newEmail)
+                .then(() => alert("Email updated!"))
+                .catch(error => alert(error.message));
+            }
+        }
+
+        function changePassword() {
+            const user = auth.currentUser;
+            const newPassword = document.getElementById("newPassword").value;
+            if (user) {
+                user.updatePassword(newPassword)
+                .then(() => alert("Password updated!"))
+                .catch(error => alert(error.message));
+            }
+        }
+
+        // Check if user is already logged in
+        auth.onAuthStateChanged(user => {
+            if (user) showHome();
+            else showAuth();
+        });
+    </script>
 </body>
 </html>
