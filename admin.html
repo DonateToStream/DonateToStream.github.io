@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel</title>
+    <style>
+        body { text-align: center; font-family: Arial, sans-serif; }
+        input, button { padding: 10px; margin: 5px; }
+    </style>
+</head>
+<body>
+
+    <h2>Admin Panel</h2>
+    <input type="email" id="searchEmail" placeholder="Search User by Email">
+    <button onclick="banUser()">Ban User</button>
+    <p id="banStatus"></p>
+
+    <h3>Site Lockdown</h3>
+    <button onclick="lockSite()">Lock Site</button>
+    <button onclick="unlockSite()">Unlock Site</button>
+    <p id="lockStatus"></p>
+
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+
+    <script>
+        const auth = firebase.auth();
+        const db = firebase.database();
+
+        function banUser() {
+            let email = document.getElementById("searchEmail").value;
+            auth.fetchSignInMethodsForEmail(email).then((methods) => {
+                if (methods.length > 0) {
+                    auth.getUserByEmail(email).then(user => {
+                        user.disable(); 
+                        document.getElementById("banStatus").innerText = email + " has been banned!";
+                    });
+                }
+            });
+        }
+
+        function lockSite() { db.ref("site_lockdown").set(true); }
+        function unlockSite() { db.ref("site_lockdown").set(false); }
+    </script>
+
+</body>
+</html>
