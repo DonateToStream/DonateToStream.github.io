@@ -1,95 +1,132 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login & Signup</title>
-    <style>
-        body { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; font-family: Arial, sans-serif; }
-        .container { max-width: 400px; padding: 20px; border: 1px solid #ccc; border-radius: 5px; text-align: center; }
-        input, button { width: 100%; padding: 10px; margin: 5px 0; border: 1px solid #ddd; border-radius: 5px; }
-        button { background: #007bff; color: white; cursor: pointer; }
-        button:hover { background: #0056b3; }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Firebase Authentication</title>
+
+  <!-- Firebase SDKs (Modular v9) -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
+    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, sendPasswordResetEmail, signOut } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
+    import { RecaptchaVerifier } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
+
+    // Firebase config
+    const firebaseConfig = {
+      apiKey: "AIzaSyBxm9scK9bWxue782r8w2xNR_thS1y9-q4",
+      authDomain: "dhjrjtdzjg.firebaseapp.com",
+      databaseURL: "https://dhjrjtdzjg-default-rtdb.firebaseio.com",
+      projectId: "dhjrjtdzjg",
+      storageBucket: "dhjrjtdzjg.firebasestorage.app",
+      messagingSenderId: "548960975194",
+      appId: "1:548960975194:web:fc9596a8cae353883d9b63",
+      measurementId: "G-BPJJSQV4Z6"
+    };
+
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    // Login Function
+    function login() {
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
+
+      signInWithEmailAndPassword(auth, email, password)
+        .then((userCredential) => {
+          const user = userCredential.user;
+          console.log("Logged in as:", user.email);
+          window.location.href = "home.html"; // Redirect to home page after login
+        })
+        .catch((error) => {
+          const errorCode = error.code;
+          const errorMessage = error.message;
+          console.error("Login error:", errorCode, errorMessage);
+        });
+    }
+
+    // Sign-up Function
+    function signup() {
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
+
+      createUserWithEmailAndPassword(auth, email, password)
+        .then((userCredential) => {
+          const user = userCredential.user;
+          console.log("Signed up as:", user.email);
+          window.location.href = "home.html"; // Redirect to home page after sign up
+        })
+        .catch((error) => {
+          const errorCode = error.code;
+          const errorMessage = error.message;
+          console.error("Signup error:", errorCode, errorMessage);
+        });
+    }
+
+    // Password Reset Function
+    function resetPassword() {
+      const email = document.getElementById("email").value;
+
+      sendPasswordResetEmail(auth, email)
+        .then(() => {
+          alert("Password reset email sent!");
+        })
+        .catch((error) => {
+          const errorCode = error.code;
+          const errorMessage = error.message;
+          console.error("Password reset error:", errorCode, errorMessage);
+        });
+    }
+
+    // 2FA Enable Function
+    function enable2FA() {
+      const phoneNumber = document.getElementById("phoneNumber").value;
+      const appVerifier = new RecaptchaVerifier('recaptcha-container', {
+        size: 'invisible',
+        callback: function(response) {
+          // Success callback
+        }
+      }, auth);
+
+      appVerifier.verify().then(function() {
+        auth.currentUser.linkWithPhoneNumber(phoneNumber, appVerifier)
+        .then(function(confirmationResult) {
+          const verificationCode = prompt("Enter the verification code sent to your phone:");
+          return confirmationResult.confirm(verificationCode);
+        })
+        .then(function(result) {
+          alert("2FA has been enabled successfully.");
+        })
+        .catch(function(error) {
+          console.error("Error enabling 2FA:", error.message);
+          alert("Failed to enable 2FA: " + error.message);
+        });
+      });
+    }
+
+  </script>
 </head>
 <body>
+  <h1>Firebase Authentication</h1>
+  <h2>Login</h2>
+  <input type="email" id="email" placeholder="Email">
+  <input type="password" id="password" placeholder="Password">
+  <button onclick="login()">Login</button>
 
-    <div class="container" id="loginContainer">
-        <h2>Login / Sign Up</h2>
-        <input type="email" id="email" placeholder="Email">
-        <input type="password" id="password" placeholder="Password">
-        <button onclick="login()">Login</button>
-        <button onclick="signup()">Sign Up</button>
-        <button onclick="resetPassword()">Forgot Password?</button>
-        <p id="status"></p>
-    </div>
+  <h2>Sign Up</h2>
+  <input type="email" id="email" placeholder="Email">
+  <input type="password" id="password" placeholder="Password">
+  <button onclick="signup()">Sign Up</button>
 
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
-    <!-- Add reCAPTCHA script in the header -->
-<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <h2>Reset Password</h2>
+  <input type="email" id="email" placeholder="Enter your email">
+  <button onclick="resetPassword()">Reset Password</button>
 
-<!-- Add this code to your page for reCAPTCHA -->
-<div id="recaptcha-container"></div>
+  <div id="recaptcha-container"></div>
 
-    <script>
-        const firebaseConfig = {
-            apiKey: "AIzaSyBxm9scK9bWxue782r8w2xNR_thS1y9-q4",
-            authDomain: "dhjrjtdzjg.firebaseapp.com",
-            databaseURL: "https://dhjrjtdzjg-default-rtdb.firebaseio.com",
-            projectId: "dhjrjtdzjg",
-            storageBucket: "dhjrjtdzjg.firebasestorage.app",
-            messagingSenderId: "548960975194",
-            appId: "1:548960975194:web:fc9596a8cae353883d9b63",
-            measurementId: "G-BPJJSQV4Z6"
-        };
-
-        firebase.initializeApp(firebaseConfig);
-        const auth = firebase.auth();
-
-        function signup() {
-            let email = document.getElementById("email").value;
-            let password = document.getElementById("password").value;
-
-            auth.createUserWithEmailAndPassword(email, password)
-                .then((userCredential) => {
-                    document.getElementById("status").innerText = "Account created! Redirecting...";
-                    setTimeout(() => { window.location.href = "home.html"; }, 1000);
-                })
-                .catch(error => document.getElementById("status").innerText = error.message);
-        }
-
-        function login() {
-            let email = document.getElementById("email").value;
-            let password = document.getElementById("password").value;
-
-            auth.signInWithEmailAndPassword(email, password)
-                .then(() => {
-                    document.getElementById("status").innerText = "Logged in! Redirecting...";
-                    setTimeout(() => { window.location.href = "home.html"; }, 1000);
-                })
-                .catch(error => document.getElementById("status").innerText = error.message);
-        }
-
-        function resetPassword() {
-            let email = document.getElementById("email").value;
-            if (!email) {
-                document.getElementById("status").innerText = "Enter your email.";
-                return;
-            }
-            auth.sendPasswordResetEmail(email)
-                .then(() => document.getElementById("status").innerText = "Password reset email sent!")
-                .catch(error => document.getElementById("status").innerText = error.message);
-        }
-
-        auth.onAuthStateChanged(user => {
-            if (user) {
-                window.location.href = "home.html"; // Redirect if already logged in
-            }
-        });
-    </script>
-
+  <h2>Enable 2FA</h2>
+  <input type="text" id="phoneNumber" placeholder="Enter phone number">
+  <button onclick="enable2FA()">Enable 2FA</button>
 </body>
 </html>
+
