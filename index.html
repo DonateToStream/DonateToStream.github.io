@@ -149,28 +149,41 @@
     const user = auth.currentUser;
     const newEmail = document.getElementById("newEmail").value;
 
-    if (user) {
-        // Ask the user to re-enter their password before changing email
-        const password = prompt("Please enter your password to confirm:");
-
-        if (!password) {
-            alert("Password is required to change email.");
-            return;
-        }
-
-        const credential = firebase.auth.EmailAuthProvider.credential(user.email, password);
-
-        // Re-authenticate the user
-        user.reauthenticateWithCredential(credential).then(() => {
-            // Now update the email
-            user.updateEmail(newEmail).then(() => {
-                alert("Email updated successfully! Please verify your new email.");
-                user.sendEmailVerification(); // Send a verification email for the new address
-            }).catch(error => alert("Error updating email: " + error.message));
-        }).catch(error => alert("Re-authentication failed: " + error.message));
-    } else {
+    if (!user) {
         alert("No user is logged in.");
+        return;
     }
+
+    if (!newEmail.includes("@")) {
+        alert("Invalid email format.");
+        return;
+    }
+
+    // Prompt for password re-authentication
+    const password = prompt("Enter your current password to confirm email change:");
+    if (!password) {
+        alert("Password is required to change email.");
+        return;
+    }
+
+    const credential = firebase.auth.EmailAuthProvider.credential(user.email, password);
+
+    // Re-authenticate the user
+    user.reauthenticateWithCredential(credential)
+        .then(() => {
+            // Update the email after successful re-authentication
+            user.updateEmail(newEmail)
+                .then(() => {
+                    alert("Email updated successfully! A verification email has been sent.");
+                    user.sendEmailVerification(); // Send verification to new email
+                })
+                .catch(error => {
+                    alert("Error updating email: " + error.message);
+                });
+        })
+        .catch(error => {
+            alert("Re-authentication failed: " + error.message);
+        });
 }
 
         function changePassword() {
