@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
+    <style>
+        body { text-align: center; font-family: Arial, sans-serif; }
+        button { padding: 10px; margin: 10px; background: #dc3545; color: white; border: none; cursor: pointer; }
+        button:hover { background: #a82832; }
+    </style>
+</head>
+<body>
+
+    <h2>Welcome to Home Page</h2>
+    <p id="userEmail"></p>
+    <button onclick="logout()">Logout</button>
+
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyBxm9scK9bWxue782r8w2xNR_thS1y9-q4",
+            authDomain: "dhjrjtdzjg.firebaseapp.com",
+            databaseURL: "https://dhjrjtdzjg-default-rtdb.firebaseio.com",
+            projectId: "dhjrjtdzjg",
+            storageBucket: "dhjrjtdzjg.firebasestorage.app",
+            messagingSenderId: "548960975194",
+            appId: "1:548960975194:web:fc9596a8cae353883d9b63",
+            measurementId: "G-BPJJSQV4Z6"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+
+        function logout() {
+            auth.signOut().then(() => {
+                window.location.href = "index.html";
+            });
+        }
+
+        auth.onAuthStateChanged(user => {
+            if (user) {
+                document.getElementById("userEmail").innerText = "Logged in as: " + user.email;
+            } else {
+                window.location.href = "index.html"; // Redirect to login if not logged in
+            }
+        });
+    </script>
+
+</body>
+</html>
