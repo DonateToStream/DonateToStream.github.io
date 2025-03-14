@@ -1,97 +1,25 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Login</title>
-
-  <!-- Firebase SDK (Modular v9) -->
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
-    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
-
-    // Firebase config
-    const firebaseConfig = {
-      apiKey: "AIzaSyBxm9scK9bWxue782r8w2xNR_thS1y9-q4",
-      authDomain: "dhjrjtdzjg.firebaseapp.com",
-      databaseURL: "https://dhjrjtdzjg-default-rtdb.firebaseio.com",
-      projectId: "dhjrjtdzjg",
-      storageBucket: "dhjrjtdzjg.firebasestorage.app",
-      messagingSenderId: "548960975194",
-      appId: "1:548960975194:web:fc9596a8cae353883d9b63",
-      measurementId: "G-BPJJSQV4Z6"
-    };
-
-    // Initialize Firebase
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app); // Get Auth instance from Firebase
-
-    // Login Function
-    function login() {
-      const email = document.getElementById("email").value;
-      const password = document.getElementById("password").value;
-
-      signInWithEmailAndPassword(auth, email, password)
-        .then((userCredential) => {
-          const user = userCredential.user;
-          console.log("Logged in as:", user.email);
-          window.location.href = "home.html"; // Redirect to home page after login
-        })
-        .catch((error) => {
-          const errorCode = error.code;
-          const errorMessage = error.message;
-          console.error("Login error:", errorCode, errorMessage);
-        });
-    }
-
-    // Sign-up Function
-    function signup() {
-      const email = document.getElementById("email").value;
-      const password = document.getElementById("password").value;
-
-      createUserWithEmailAndPassword(auth, email, password)
-        .then((userCredential) => {
-          const user = userCredential.user;
-          console.log("Signed up as:", user.email);
-          window.location.href = "home.html"; // Redirect to home page after sign up
-        })
-        .catch((error) => {
-          const errorCode = error.code;
-          const errorMessage = error.message;
-          console.error("Signup error:", errorCode, errorMessage);
-        });
-    }
-
-    // Password Reset Function
-    function resetPassword() {
-      const email = document.getElementById("email").value;
-
-      sendPasswordResetEmail(auth, email)
-        .then(() => {
-          alert("Password reset email sent!");
-        })
-        .catch((error) => {
-          const errorCode = error.code;
-          const errorMessage = error.message;
-          console.error("Password reset error:", errorCode, errorMessage);
-        });
-    }
-  </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login / Signup</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <h1>Firebase Authentication</h1>
-  <h2>Login</h2>
-  <input type="email" id="email" placeholder="Email">
-  <input type="password" id="password" placeholder="Password">
-  <button onclick="login()">Login</button>
+    <div class="container">
+        <h2>Login / Signup</h2>
+        <input type="email" id="email" placeholder="Email">
+        <input type="password" id="password" placeholder="Password">
+        <button onclick="login()">Login</button>
+        <button onclick="signup()">Sign Up</button>
+        <button onclick="resetPassword()">Forgot Password?</button>
+        <p id="message"></p>
+    </div>
 
-  <h2>Sign Up</h2>
-  <input type="email" id="email" placeholder="Email">
-  <input type="password" id="password" placeholder="Password">
-  <button onclick="signup()">Sign Up</button>
-
-  <h2>Reset Password</h2>
-  <input type="email" id="email" placeholder="Enter your email">
-  <button onclick="resetPassword()">Reset Password</button>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-auth.js"></script>
+    <script src="firebase-config.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>
