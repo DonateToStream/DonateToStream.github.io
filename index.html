@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Firebase Auth</title>
+    <title>Firebase Auth & Admin</title>
     <style>
         body {
             display: flex;
@@ -20,7 +20,7 @@
             border-radius: 5px;
             text-align: center;
         }
-        input {
+        input, button {
             width: 100%;
             padding: 10px;
             margin: 5px 0;
@@ -28,61 +28,65 @@
             border-radius: 5px;
         }
         button {
-            width: 100%;
-            padding: 10px;
-            margin-top: 10px;
-            border: none;
             background: #007bff;
             color: white;
             cursor: pointer;
-            border-radius: 5px;
         }
         button:hover {
             background: #0056b3;
         }
+        .hidden { display: none; }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <h2>Firebase Authentication</h2>
+    <div class="container" id="loginContainer">
+        <h2>Login</h2>
         <input type="email" id="email" placeholder="Email">
         <input type="password" id="password" placeholder="Password">
         <button onclick="login()">Login</button>
         <button onclick="signup()">Sign Up</button>
         <button onclick="resetPassword()">Forgot Password?</button>
         <p id="status"></p>
-        <button onclick="logout()" style="display:none;" id="logoutBtn">Logout</button>
+        <button onclick="logout()" class="hidden" id="logoutBtn">Logout</button>
     </div>
 
-    <!-- Firebase SDK via CDN -->
-    <script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-auth.js"></script>
+    <div class="container hidden" id="lockdownMessage">
+        <h2>Site is in Lockdown</h2>
+        <input type="password" id="unlockCode" placeholder="Enter Unlock Code">
+        <button onclick="unlockSite()">Unlock</button>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 
     <script>
-        // ✅ Replace with your Firebase config
         const firebaseConfig = {
-    apiKey: "AIzaSyBxm9scK9bWxue782r8w2xNR_thS1y9-q4",
-    authDomain: "dhjrjtdzjg.firebaseapp.com",
-    databaseURL: "https://dhjrjtdzjg-default-rtdb.firebaseio.com",
-    projectId: "dhjrjtdzjg",
-    storageBucket: "dhjrjtdzjg.firebasestorage.app",
-    messagingSenderId: "548960975194",
-    appId: "1:548960975194:web:fc9596a8cae353883d9b63",
-  };
+            apiKey: "AIzaSyBxm9scK9bWxue782r8w2xNR_thS1y9-q4",
+            authDomain: "dhjrjtdzjg.firebaseapp.com",
+            databaseURL: "https://dhjrjtdzjg-default-rtdb.firebaseio.com",
+            projectId: "dhjrjtdzjg",
+            storageBucket: "dhjrjtdzjg.firebasestorage.app",
+            messagingSenderId: "548960975194",
+            appId: "1:548960975194:web:fc9596a8cae353883d9b63",
+            measurementId: "G-BPJJSQV4Z6"
+        };
 
-        // ✅ Initialize Firebase
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
+        const db = firebase.database();
+
+        const LOCKDOWN_KEY = "site_lockdown"; // Database key for lockdown state
+        const ADMIN_EMAIL = "admin@example.com"; // Set your admin email
+        const UNLOCK_CODE = "123456"; // Change this to your actual unlock code
 
         function signup() {
             let email = document.getElementById("email").value;
             let password = document.getElementById("password").value;
 
             auth.createUserWithEmailAndPassword(email, password)
-                .then(() => {
-                    document.getElementById("status").innerText = "Account created! You can now log in.";
-                })
+                .then(() => document.getElementById("status").innerText = "Account created!")
                 .catch(error => document.getElementById("status").innerText = error.message);
         }
 
@@ -93,7 +97,11 @@
             auth.signInWithEmailAndPassword(email, password)
                 .then(() => {
                     document.getElementById("status").innerText = "Logged in!";
-                    document.getElementById("logoutBtn").style.display = "block";
+                    document.getElementById("logoutBtn").classList.remove("hidden");
+
+                    if (email === ADMIN_EMAIL) {
+                        window.location.href = "admin.html"; // Redirect admin to the admin panel
+                    }
                 })
                 .catch(error => document.getElementById("status").innerText = error.message);
         }
@@ -101,10 +109,9 @@
         function resetPassword() {
             let email = document.getElementById("email").value;
             if (!email) {
-                document.getElementById("status").innerText = "Enter your email to reset password.";
+                document.getElementById("status").innerText = "Enter your email.";
                 return;
             }
-
             auth.sendPasswordResetEmail(email)
                 .then(() => document.getElementById("status").innerText = "Password reset email sent!")
                 .catch(error => document.getElementById("status").innerText = error.message);
@@ -113,11 +120,31 @@
         function logout() {
             auth.signOut().then(() => {
                 document.getElementById("status").innerText = "Logged out!";
-                document.getElementById("logoutBtn").style.display = "none";
+                document.getElementById("logoutBtn").classList.add("hidden");
             });
         }
+
+        function checkLockdown() {
+            db.ref(LOCKDOWN_KEY).once("value", snapshot => {
+                if (snapshot.val()) {
+                    document.getElementById("lockdownMessage").classList.remove("hidden");
+                    document.getElementById("loginContainer").classList.add("hidden");
+                }
+            });
+        }
+
+        function unlockSite() {
+            let code = document.getElementById("unlockCode").value;
+            if (code === UNLOCK_CODE) {
+                db.ref(LOCKDOWN_KEY).set(false);
+                location.reload();
+            } else {
+                alert("Wrong unlock code!");
+            }
+        }
+
+        checkLockdown();
     </script>
 
 </body>
 </html>
-
