@@ -1,80 +1,32 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Home</title>
-  <!-- Firebase SDK (Modular v9) -->
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
-    import { getAuth, onAuthStateChanged, updateEmail, updatePassword } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
-
-    // Firebase config
-    const firebaseConfig = {
-      apiKey: "AIzaSyBxm9scK9bWxue782r8w2xNR_thS1y9-q4",
-      authDomain: "dhjrjtdzjg.firebaseapp.com",
-      databaseURL: "https://dhjrjtdzjg-default-rtdb.firebaseio.com",
-      projectId: "dhjrjtdzjg",
-      storageBucket: "dhjrjtdzjg.firebasestorage.app",
-      messagingSenderId: "548960975194",
-      appId: "1:548960975194:web:fc9596a8cae353883d9b63",
-      measurementId: "G-BPJJSQV4Z6"
-    };
-
-    // Initialize Firebase
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-
-    // User Authentication Check
-    onAuthStateChanged(auth, (user) => {
-      if (!user) {
-        window.location.href = "index.html"; // Redirect to login page if not logged in
-      } else {
-        document.getElementById("userEmail").textContent = `Logged in as: ${user.email}`;
-      }
-    });
-
-    // Change Email Function
-    function changeEmail() {
-      const newEmail = document.getElementById("newEmail").value;
-      const user = auth.currentUser;
-      updateEmail(user, newEmail)
-        .then(() => {
-          alert("Email updated successfully.");
-        })
-        .catch((error) => {
-          const errorMessage = error.message;
-          alert("Error: " + errorMessage);
-        });
-    }
-
-    // Change Password Function
-    function changePassword() {
-      const newPassword = document.getElementById("newPassword").value;
-      const user = auth.currentUser;
-      updatePassword(user, newPassword)
-        .then(() => {
-          alert("Password updated successfully.");
-        })
-        .catch((error) => {
-          const errorMessage = error.message;
-          alert("Error: " + errorMessage);
-        });
-    }
-  </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <h1>Welcome to the Home Page!</h1>
-  <p id="userEmail">Logged in as: </p>
+    <nav>
+        <ul>
+            <li>Tab 1</li>
+            <li>Tab 2</li>
+            <li>Tab 3</li>
+            <li>Tab 4</li>
+            <li>Tab 5</li>
+        </ul>
+    </nav>
 
-  <h2>Settings</h2>
-  <h3>Change Email</h3>
-  <input type="email" id="newEmail" placeholder="Enter new email">
-  <button onclick="changeEmail()">Change Email</button>
+    <div class="settings-icon" onclick="window.location.href='settings.html'">
+        ⚙ Settings
+    </div>
 
-  <h3>Change Password</h3>
-  <input type="password" id="newPassword" placeholder="Enter new password">
-  <button onclick="changePassword()">Change Password</button>
+    <h1>Welcome to the Home Page</h1>
+    <button onclick="logout()">Logout</button>
 
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-auth.js"></script>
+    <script src="firebase-config.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>
