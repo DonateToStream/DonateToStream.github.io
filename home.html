@@ -1,122 +1,56 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Home</title>
-    <style>
-        body { text-align: center; font-family: Arial, sans-serif; }
-        button { padding: 10px; margin: 10px; background: #dc3545; color: white; border: none; cursor: pointer; }
-        button:hover { background: #a82832; }
-        input { padding: 8px; margin: 5px 0; width: 200px; }
-        .section { margin-bottom: 20px; }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Home - Firebase Authentication</title>
+
+  <script type="module">
+    import { getAuth, updateEmail, updatePassword } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
+
+    const auth = getAuth();
+
+    // Password Change Function
+    function changePassword() {
+      const newPassword = document.getElementById("newPassword").value;
+      
+      updatePassword(auth.currentUser, newPassword)
+        .then(() => {
+          alert("Password changed successfully.");
+        })
+        .catch((error) => {
+          console.error("Password change error:", error.message);
+          alert("Failed to change password: " + error.message);
+        });
+    }
+
+    // Email Change Function
+    function changeEmail() {
+      const newEmail = document.getElementById("newEmail").value;
+      
+      updateEmail(auth.currentUser, newEmail)
+        .then(() => {
+          alert("Email changed successfully.");
+        })
+        .catch((error) => {
+          console.error("Email change error:", error.message);
+          alert("Failed to change email: " + error.message);
+        });
+    }
+  </script>
 </head>
 <body>
+  <h1>Welcome to Your Home Page!</h1>
 
-    <h2>Welcome to Home Page</h2>
-    <p id="userEmail"></p>
-    <button onclick="logout()">Logout</button>
+  <h2>Change Email</h2>
+  <input type="email" id="newEmail" placeholder="New Email">
+  <button onclick="changeEmail()">Change Email</button>
 
-    <div class="section">
-        <h3>Change Email</h3>
-        <input type="email" id="newEmail" placeholder="New email">
-        <button onclick="changeEmail()">Change Email</button>
-    </div>
+  <h2>Change Password</h2>
+  <input type="password" id="newPassword" placeholder="New Password">
+  <button onclick="changePassword()">Change Password</button>
 
-    <div class="section">
-        <h3>Change Password</h3>
-        <input type="password" id="newPassword" placeholder="New password">
-        <button onclick="changePassword()">Change Password</button>
-    </div>
-
-    <div class="section">
-        <h3>Enable 2FA</h3>
-        <input type="tel" id="phoneNumber" placeholder="Phone number (+1234567890)">
-        <button onclick="enable2FA()">Enable 2FA</button>
-    </div>
-
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
-    <script>
-        const firebaseConfig = {
-            apiKey: "AIzaSyBxm9scK9bWxue782r8w2xNR_thS1y9-q4",
-            authDomain: "dhjrjtdzjg.firebaseapp.com",
-            databaseURL: "https://dhjrjtdzjg-default-rtdb.firebaseio.com",
-            projectId: "dhjrjtdzjg",
-            storageBucket: "dhjrjtdzjg.firebasestorage.app",
-            messagingSenderId: "548960975194",
-            appId: "1:548960975194:web:fc9596a8cae353883d9b63",
-            measurementId: "G-BPJJSQV4Z6"
-        };
-
-        firebase.initializeApp(firebaseConfig);
-        const auth = firebase.auth();
-
-        function logout() {
-            auth.signOut().then(() => {
-                window.location.href = "index.html";
-            });
-        }
-
-        function changeEmail() {
-            const newEmail = document.getElementById("newEmail").value;
-            const user = auth.currentUser;
-
-            if (user) {
-                user.updateEmail(newEmail).then(() => {
-                    alert("Email changed successfully!");
-                }).catch(error => {
-                    alert(error.message);
-                });
-            }
-        }
-
-        function changePassword() {
-            const newPassword = document.getElementById("newPassword").value;
-            const user = auth.currentUser;
-
-            if (user) {
-                user.updatePassword(newPassword).then(() => {
-                    alert("Password changed successfully!");
-                }).catch(error => {
-                    alert(error.message);
-                });
-            }
-        }
-
-        function enable2FA() {
-            const phoneNumber = document.getElementById("phoneNumber").value;
-            const appVerifier = new firebase.auth.RecaptchaVerifier('enable2FA', {
-                size: 'invisible',
-                callback: function(response) {
-                    console.log(response);
-                }
-            });
-
-            auth.currentUser.linkWithPhoneNumber(phoneNumber, appVerifier)
-                .then(confirmationResult => {
-                    // Ask the user to enter the verification code
-                    const verificationCode = prompt("Enter the 6-digit verification code sent to your phone:");
-                    return confirmationResult.confirm(verificationCode);
-                })
-                .then(result => {
-                    alert("2FA enabled successfully!");
-                })
-                .catch(error => {
-                    alert(error.message);
-                });
-        }
-
-        auth.onAuthStateChanged(user => {
-            if (user) {
-                document.getElementById("userEmail").innerText = "Logged in as: " + user.email;
-            } else {
-                window.location.href = "index.html"; // Redirect to login if not logged in
-            }
-        });
-    </script>
-
+  <h2>Enable 2FA</h2>
+  <p>If you want to enable 2FA, please go back to the login page and follow the process.</p>
 </body>
 </html>
