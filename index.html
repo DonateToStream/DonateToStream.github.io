@@ -17,6 +17,7 @@
 </head>
 <body>
 
+    <!-- ✅ Login / Signup Page -->
     <div id="auth-container" class="container">
         <h2>Login / Signup</h2>
         <input type="email" id="email" placeholder="Email">
@@ -27,20 +28,29 @@
         <p id="message"></p>
     </div>
 
+    <!-- ✅ Home Page -->
     <div id="home-container" class="hidden">
         <nav>
             <ul>
-                <li>Tab 1</li>
-                <li>Tab 2</li>
-                <li>Tab 3</li>
-                <li>Tab 4</li>
-                <li>Tab 5</li>
+                <li onclick="showTab(1)">Tab 1</li>
+                <li onclick="showTab(2)">Tab 2</li>
+                <li onclick="showTab(3)">Tab 3</li>
+                <li onclick="showTab(4)">Tab 4</li>
+                <li onclick="showTab(5)">Tab 5</li>
             </ul>
             <div class="settings-icon" onclick="toggleSettings()">⚙ Settings</div>
         </nav>
         <h1>Welcome!</h1>
         <button onclick="logout()">Logout</button>
 
+        <!-- ✅ Tab Sections -->
+        <div id="tab1" class="tab-content">Content for Tab 1</div>
+        <div id="tab2" class="tab-content hidden">Content for Tab 2</div>
+        <div id="tab3" class="tab-content hidden">Content for Tab 3</div>
+        <div id="tab4" class="tab-content hidden">Content for Tab 4</div>
+        <div id="tab5" class="tab-content hidden">Content for Tab 5</div>
+
+        <!-- ✅ Settings Panel -->
         <div id="settings-container" class="hidden">
             <h2>Settings</h2>
             <input type="email" id="newEmail" placeholder="New Email">
@@ -50,12 +60,12 @@
         </div>
     </div>
 
-    <!-- Firebase SDK -->
+    <!-- ✅ Firebase Scripts (v8 for compatibility) -->
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
 
     <script>
-        // Firebase Config
+        // ✅ Firebase Config
         const firebaseConfig = {
             apiKey: "AIzaSyBxm9scK9bWxue782r8w2xNR_thS1y9-q4",
             authDomain: "dhjrjtdzjg.firebaseapp.com",
@@ -67,11 +77,11 @@
             measurementId: "G-BPJJSQV4Z6"
         };
 
-        // Initialize Firebase
+        // ✅ Initialize Firebase
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
 
-        // UI Handling
+        // ✅ UI Functions
         function showHome() {
             document.getElementById("auth-container").classList.add("hidden");
             document.getElementById("home-container").classList.remove("hidden");
@@ -86,13 +96,24 @@
             document.getElementById("settings-container").classList.toggle("hidden");
         }
 
-        // Authentication Functions
+        function showTab(tabNumber) {
+            document.querySelectorAll(".tab-content").forEach(tab => tab.classList.add("hidden"));
+            document.getElementById(`tab${tabNumber}`).classList.remove("hidden");
+        }
+
+        // ✅ Authentication Functions
         function signup() {
             const email = document.getElementById("email").value;
             const password = document.getElementById("password").value;
             
             auth.createUserWithEmailAndPassword(email, password)
-            .then(() => showHome())
+            .then(userCredential => {
+                const user = userCredential.user;
+                user.sendEmailVerification().then(() => {
+                    alert("Verification email sent! Please check your inbox.");
+                    auth.signOut(); // Force user to verify before login
+                });
+            })
             .catch(error => document.getElementById("message").textContent = error.message);
         }
 
@@ -101,7 +122,15 @@
             const password = document.getElementById("password").value;
             
             auth.signInWithEmailAndPassword(email, password)
-            .then(() => showHome())
+            .then(userCredential => {
+                const user = userCredential.user;
+                if (!user.emailVerified) {
+                    alert("Please verify your email before logging in.");
+                    auth.signOut();
+                } else {
+                    showHome();
+                }
+            })
             .catch(error => document.getElementById("message").textContent = error.message);
         }
 
@@ -136,10 +165,13 @@
             }
         }
 
-        // Check if user is already logged in
+        // ✅ Check if user is already logged in
         auth.onAuthStateChanged(user => {
-            if (user) showHome();
-            else showAuth();
+            if (user && user.emailVerified) {
+                showHome();
+            } else {
+                showAuth();
+            }
         });
     </script>
 </body>
