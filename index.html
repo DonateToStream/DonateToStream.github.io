@@ -1,60 +1,121 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ad-Powered Redirect</title>
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7099868100329345"
-     crossorigin="anonymous"></script>
-    <style>
-        body { text-align: center; font-family: Arial, sans-serif; padding: 20px; }
-        button { padding: 10px 20px; font-size: 16px; margin: 10px; cursor: pointer; }
-        #ad-container { display: none; width: 300px; height: 250px; margin-top: 20px; }
-        #persistent-ad { position: fixed; right: 10px; top: 50%; transform: translateY(-50%); }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Trade Platform</title>
+  <script type="module">
+    // Import the functions you need from the SDKs you need
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
+    import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
+    import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
+    import { getAnalytics, logEvent } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-analytics.js";
+
+    // Your web app's Firebase configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyBxm9scK9bWxue782r8w2xNR_thS1y9-q4",
+      authDomain: "dhjrjtdzjg.firebaseapp.com",
+      databaseURL: "https://dhjrjtdzjg-default-rtdb.firebaseio.com",
+      projectId: "dhjrjtdzjg",
+      storageBucket: "dhjrjtdzjg.firebasestorage.app",
+      messagingSenderId: "548960975194",
+      appId: "1:548960975194:web:fc9596a8cae353883d9b63",
+      measurementId: "G-BPJJSQV4Z6"
+    };
+
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const analytics = getAnalytics(app);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    // Sign in anonymously (can be replaced with other authentication methods)
+    signInAnonymously(auth)
+      .then(() => {
+        console.log("User signed in anonymously!");
+      })
+      .catch((error) => {
+        console.error("Error signing in:", error);
+      });
+
+    // Function to add a trade item to Firestore
+    async function addTrade(itemId, itemDescription, robux) {
+      try {
+        const docRef = await addDoc(collection(db, "trades"), {
+          itemId: itemId,
+          itemDescription: itemDescription,
+          robux: robux,
+          timestamp: new Date()
+        });
+        console.log("Trade added with ID: ", docRef.id);
+
+        // Log the trade creation event to Google Analytics
+        logEvent(analytics, 'create_trade', {
+          content_type: 'trade',
+          item_id: itemId
+        });
+
+        // Display success message
+        alert('Trade added successfully!');
+      } catch (e) {
+        console.error("Error adding trade: ", e);
+        alert('Error adding trade. Please try again.');
+      }
+    }
+
+    // Function to handle the "Create Trade" button click
+    function handleCreateTrade() {
+      const itemId = document.getElementById('itemId').value;
+      const itemDescription = document.getElementById('itemDescription').value;
+      const robux = document.getElementById('robux').value;
+
+      // Validate inputs
+      if (itemId && itemDescription && robux) {
+        addTrade(itemId, itemDescription, robux);
+      } else {
+        alert('Please fill in all fields!');
+      }
+    }
+
+  </script>
 </head>
 <body>
-    <h1>Choose an Option</h1>
-    <button onclick="showAd('https://example.com')">Visit Example</button>
-    <button onclick="showAd('https://another-site.com')">Visit Another Site</button>
-    
-    <!-- Persistent Ad on the Right -->
-    <div id="persistent-ad">
-        <ins class="adsbygoogle"
-            style="display:block; width: 300px; height: 250px;"
-            data-ad-client="ca-pub-7099868100329345"
-            data-ad-slot="7622435183"
-            data-ad-format="auto"
-            data-full-width-responsive="true"></ins>
-        <script>
-            (adsbygoogle = window.adsbygoogle || []).push({});
-        </script>
-    </div>
-    
-    <div id="ad-container">
-        <p>Viewing Ad... Please wait</p>
-        <ins class="adsbygoogle"
-            style="display:block; width: 300px; height: 250px;"
-            data-ad-client="ca-pub-7099868100329345"
-            data-ad-slot="1626774999"
-            data-ad-format="auto"></ins>
-        <script>
-            (adsbygoogle = window.adsbygoogle || []).push({});
-        </script>
-    </div>
+  <h1>Welcome to the Trade Platform</h1>
 
-    <script>
-        function showAd(targetUrl) {
-            // Ensure the ad container is visible
-            document.getElementById('ad-container').style.display = 'block';
+  <!-- Login Section -->
+  <div id="login">
+    <h2>Login</h2>
+    <label for="username">Enter your username:</label>
+    <input type="text" id="username" placeholder="Enter your username">
+    <button onclick="alert('Logged in successfully')">Login</button>
+  </div>
 
-            // Trigger resize to ensure ad has space to load
-            window.dispatchEvent(new Event('resize'));
+  <hr>
 
-            setTimeout(() => {
-                window.location.href = targetUrl;
-            }, 7000); // 7-second delay before redirect
-        }
-    </script>
+  <!-- Trade Creation Section -->
+  <div id="createTrade">
+    <h2>Create a Trade</h2>
+    <label for="itemId">Item ID:</label>
+    <input type="text" id="itemId" placeholder="Enter Item ID"><br>
+    <label for="itemDescription">Item Description:</label>
+    <input type="text" id="itemDescription" placeholder="Enter Description"><br>
+    <label for="robux">Robux:</label>
+    <input type="number" id="robux" placeholder="Enter Robux"><br>
+    <button onclick="handleCreateTrade()">Create Trade</button>
+  </div>
+
+  <hr>
+
+  <!-- Example to show how ads might appear -->
+  <div id="adsense">
+    <h3>Google AdSense Section (Placeholder)</h3>
+    <p>Ad content would be here.</p>
+  </div>
+
+  <!-- Firestore Data Display Section (Example) -->
+  <div id="tradeDisplay">
+    <h3>Active Trades</h3>
+    <p>List of active trades will be displayed here.</p>
+  </div>
 </body>
 </html>
