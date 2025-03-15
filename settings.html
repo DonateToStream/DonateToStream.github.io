@@ -20,6 +20,12 @@
     <input type="email" id="new-email" placeholder="Enter new email">
     <button onclick="changeEmail()">Change Email</button>
 
+    <h3>Enable SMS Authentication</h3>
+    <input type="text" id="phone-number" placeholder="Enter phone number">
+    <button onclick="sendOTP()">Send OTP</button>
+    <input type="text" id="otp-code" placeholder="Enter OTP">
+    <button onclick="verifyOTP()">Verify</button>
+    <div id="recaptcha-container"></div>
 
     <h3>Change Password</h3>
     <button onclick="changePassword()">Request Password Change</button>
