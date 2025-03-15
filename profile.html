@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ad Click & Link Validation</title>
-    
+    <title>Profile</title>
     <link rel="stylesheet" href="style.css">
 
     <!-- Firebase SDK -->
@@ -12,23 +11,22 @@
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
 
-    <!-- Import Firebase Config -->
-    <script src="firebase-console.js"></script>
+    <!-- Firebase Config -->
+    <script src="firebase-config.js"></script>
 
     <script>
         document.addEventListener("DOMContentLoaded", () => {
-            // Redirect to the base site if not logged in
             firebase.auth().onAuthStateChanged(user => {
                 if (!user) {
                     window.location.href = "https://donatetostream.github.io/";
                 }
             });
 
-            // Initialize Firebase Database
             const db = firebase.database();
 
             window.showAdAndOpenLink = function() {
                 alert("Playing Ad...");
+
                 setTimeout(() => {
                     db.ref("links").once("value").then(snapshot => {
                         let links = snapshot.val();
@@ -36,6 +34,7 @@
                             alert("No links available.");
                             return;
                         }
+
                         let firstLinkKey = Object.keys(links)[0];
                         let firstLink = links[firstLinkKey];
 
@@ -50,7 +49,7 @@
             function checkLinkStatus(linkKey, url) {
                 let confirmationBox = document.createElement("div");
                 confirmationBox.innerHTML = `
-                    <div style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); 
+                    <div style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
                                 background: white; padding: 20px; border: 1px solid black; text-align: center; z-index: 1000;">
                         <p>Is this link still in service?</p>
                         <button onclick="voteOnLink('${linkKey}', true)">Yes</button>
@@ -80,7 +79,6 @@
                 document.querySelector("div").remove();
             };
 
-            // Logout function
             window.logout = function() {
                 firebase.auth().signOut().then(() => {
                     window.location.href = "https://donatetostream.github.io/";
@@ -92,7 +90,7 @@
 <body>
 
     <div class="top-bar">
-        <h2>Ad Page</h2>
+        <h2>Profile</h2>
         <button id="logout-btn" onclick="logout()">Logout</button>
         <a href="settings.html" class="settings-icon">⚙️</a>
     </div>
