@@ -1,9 +1,16 @@
-const firebaseConfig = {
-    apiKey: "YOUR_API_KEY",
-    authDomain: "YOUR_AUTH_DOMAIN",
-    projectId: "YOUR_PROJECT_ID",
-    storageBucket: "YOUR_STORAGE_BUCKET",
-    messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-    appId: "YOUR_APP_ID"
-};
-firebase.initializeApp(firebaseConfig);
+  // Firebase Configuration
+  const firebaseConfig = {
+    apiKey: "AIzaSyBxm9scK9bWxue782r8w2xNR_thS1y9-q4",
+    authDomain: "dhjrjtdzjg.firebaseapp.com",
+    databaseURL: "https://dhjrjtdzjg-default-rtdb.firebaseio.com",
+    projectId: "dhjrjtdzjg",
+    storageBucket: "dhjrjtdzjg.appspot.com", // ✅ Fixed Storage Bucket
+    messagingSenderId: "548960975194",
+    appId: "1:548960975194:web:fc9596a8cae353883d9b63",
+    measurementId: "G-BPJJSQV4Z6"
+  };
+
+  // Initialize Firebase
+  const app = initializeApp(firebaseConfig);
+  const analytics = getAnalytics(app);
+  const auth = getAuth(app); // ✅ Added Authentication
