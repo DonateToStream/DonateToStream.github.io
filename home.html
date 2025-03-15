@@ -22,6 +22,16 @@
     </ul>
 </nav>
 
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        firebase.auth().onAuthStateChanged(user => {
+            if (!user) {
+                window.location.href = "https://donatetostream.github.io/";
+            }
+        });
+    });
+</script>
+
 <!-- Firebase SDK (use compat mode) -->
 <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
