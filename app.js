@@ -29,6 +29,20 @@ function logout() {
     auth.signOut().then(() => window.location.href = "index.html");
 }
 
+// Change Email Function
+function changeEmail() {
+    let newEmail = document.getElementById("new-email").value;
+    let user = firebase.auth().currentUser;
+
+    if (user) {
+        user.verifyBeforeUpdateEmail(newEmail)
+            .then(() => alert("Email change request sent! Verify the new email to confirm."))
+            .catch(error => alert(error.message));
+    } else {
+        alert("You must be logged in to change your email.");
+    }
+}
+
 // Reset Password
 function resetPassword() {
     let email = document.getElementById("email").value;
