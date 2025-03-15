@@ -43,6 +43,38 @@ function changeEmail() {
     }
 }
 
+// Login with Email Link
+function sendLoginLink() {
+    let email = document.getElementById("email").value;
+    let actionCodeSettings = {
+        url: window.location.href, // Redirect back to the site
+        handleCodeInApp: true
+    };
+
+    firebase.auth().sendSignInLinkToEmail(email, actionCodeSettings)
+        .then(() => {
+            alert("Check your email for a login link.");
+            localStorage.setItem("emailForSignIn", email); // Store for later
+        })
+        .catch(error => alert(error.message));
+}
+
+// Completing the Login
+window.onload = function () {
+    if (firebase.auth().isSignInWithEmailLink(window.location.href)) {
+        let email = localStorage.getItem("emailForSignIn");
+        if (!email) email = prompt("Please enter your email:");
+
+        firebase.auth().signInWithEmailLink(email, window.location.href)
+            .then(() => {
+                alert("Login successful!");
+                localStorage.removeItem("emailForSignIn");
+                window.location.href = "home.html";
+            })
+            .catch(error => alert(error.message));
+    }
+};
+
 // Reset Password
 function resetPassword() {
     let email = document.getElementById("email").value;
