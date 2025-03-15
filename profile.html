@@ -84,9 +84,20 @@
                     window.location.href = "https://donatetostream.github.io/";
                 });
             };
+
+            // Function to add links to specific categories in Firebase
+            window.addLinkToCategory = function(category) {
+                const url = prompt("Enter the link URL:");
+                if (url) {
+                    const newLinkKey = db.ref(`links/${category}`).push().key;
+                    db.ref(`links/${category}/${newLinkKey}`).set({ url: url }).then(() => {
+                        alert("Link added successfully to " + category);
+                    });
+                }
+            };
         });
     </script>
-    
+
     <style>
         .top-bar {
             display: flex;
@@ -95,21 +106,28 @@
             padding: 10px;
             background-color: #333;
             color: white;
+            position: relative;
         }
+
         .top-bar h2 {
             flex-grow: 1;
             text-align: center;
             margin: 0;
         }
+
         .logout-btn {
             background-color: red;
             color: white;
             border: none;
-            padding: 8px 12px;
+            padding: 8px;
             cursor: pointer;
             position: absolute;
             left: 10px;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
         }
+
         .back-home-btn {
             background-color: blue;
             color: white;
@@ -118,6 +136,27 @@
             cursor: pointer;
             position: absolute;
             right: 10px;
+        }
+
+        .button-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 20px;
+        }
+
+        .button-container button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px;
+            margin: 5px;
+            border: none;
+            cursor: pointer;
+            width: 200px;
+        }
+
+        .button-container button:hover {
+            background-color: #45a049;
         }
     </style>
 
@@ -128,6 +167,12 @@
         <button class="logout-btn" onclick="logout()">Logout</button>
         <h2>Profile</h2>
         <button class="back-home-btn" onclick="window.location.href='home.html'">Back to Home</button>
+    </div>
+
+    <div class="button-container">
+        <button onclick="addLinkToCategory('proxyLinks')">Add to Proxy Links</button>
+        <button onclick="addLinkToCategory('gameLinks')">Add to Game Links</button>
+        <button onclick="addLinkToCategory('otherLinks')">Add to Other Links</button>
     </div>
 
     <button onclick="showAdAndOpenLink()">Click to Watch Ad & Open Link</button>
