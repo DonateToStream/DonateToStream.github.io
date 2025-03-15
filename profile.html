@@ -12,10 +12,11 @@
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
 
     <!-- Firebase Config -->
-    <script src="firebase-config.js"></script>
+    <script src="firebase-console.js"></script>
 
     <script>
         document.addEventListener("DOMContentLoaded", () => {
+            // Ensure user is logged in
             firebase.auth().onAuthStateChanged(user => {
                 if (!user) {
                     window.location.href = "https://donatetostream.github.io/";
@@ -24,84 +25,79 @@
 
             const db = firebase.database();
 
-            window.showAdAndOpenLink = function() {
-                alert("Playing Ad...");
+            // Load and display links dynamically in a grid
+            function loadLinks() {
+                const linksContainer = document.getElementById("links-container");
 
-                setTimeout(() => {
-                    db.ref("links").once("value").then(snapshot => {
-                        let links = snapshot.val();
-                        if (!links) {
-                            alert("No links available.");
-                            return;
+                db.ref("links").once("value").then(snapshot => {
+                    const links = snapshot.val();
+                    if (!links) {
+                        linksContainer.innerHTML = "<p>No links available</p>";
+                        return;
+                    }
+
+                    // Clear the container first
+                    linksContainer.innerHTML = '';
+
+                    // Loop through each category and display its links
+                    for (let category in links) {
+                        const categoryDiv = document.createElement("div");
+                        categoryDiv.classList.add("category");
+                        categoryDiv.innerHTML = `<h3>${category.replace(/([A-Z])/g, ' $1').toUpperCase()}</h3>`;
+                        linksContainer.appendChild(categoryDiv);
+
+                        const linkGrid = document.createElement("div");
+                        linkGrid.classList.add("link-grid");
+
+                        for (let key in links[category]) {
+                            const link = links[category][key];
+                            const linkButton = document.createElement("button");
+                            linkButton.classList.add("link-button");
+                            linkButton.innerText = link.url;
+                            linkButton.onclick = () => window.open(link.url, "_blank");
+
+                            linkGrid.appendChild(linkButton);
                         }
 
-                        let firstLinkKey = Object.keys(links)[0];
-                        let firstLink = links[firstLinkKey];
-
-                        if (firstLink) {
-                            window.open(firstLink.url, "_blank");
-                            checkLinkStatus(firstLinkKey, firstLink.url);
-                        }
-                    });
-                }, 3000); // Simulating ad duration
-            };
-
-            function checkLinkStatus(linkKey, url) {
-                let confirmationBox = document.createElement("div");
-                confirmationBox.innerHTML = `
-                    <div style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
-                                background: white; padding: 20px; border: 1px solid black; text-align: center; z-index: 1000;">
-                        <p>Is this link still in service?</p>
-                        <button onclick="voteOnLink('${linkKey}', true)">Yes</button>
-                        <button onclick="voteOnLink('${linkKey}', false)">No</button>
-                    </div>
-                `;
-                document.body.appendChild(confirmationBox);
+                        categoryDiv.appendChild(linkGrid);
+                    }
+                });
             }
 
-            window.voteOnLink = function(linkKey, isWorking) {
-                const linkRef = db.ref(`links/${linkKey}/votes`);
-
-                linkRef.transaction(votes => {
-                    if (!votes) votes = { yes: 0, no: 0 };
-                    if (isWorking) {
-                        votes.yes += 1;
-                    } else {
-                        votes.no += 1;
-                        if (votes.no >= 10) {
-                            db.ref(`links/${linkKey}`).remove();
-                            alert("Link removed due to 10 'No' votes.");
-                        }
-                    }
-                    return votes;
-                });
-
-                document.querySelector("div").remove();
-            };
-
-            window.logout = function() {
-                firebase.auth().signOut().then(() => {
-                    window.location.href = "https://donatetostream.github.io/";
-                });
-            };
-
-            // Function to add links to specific categories in Firebase
             window.addLinkToCategory = function(category) {
                 const url = prompt("Enter the link URL:");
                 if (url) {
                     const newLinkKey = db.ref(`links/${category}`).push().key;
                     db.ref(`links/${category}/${newLinkKey}`).set({ url: url }).then(() => {
                         alert("Link added successfully to " + category);
+                        loadLinks(); // Reload links after adding
                     });
                 }
+            };
+
+            // Load the links when the page is loaded
+            loadLinks();
+
+            window.logout = function() {
+                firebase.auth().signOut().then(() => {
+                    window.location.href = "https://donatetostream.github.io/";
+                });
             };
         });
     </script>
 
     <style>
+        /* Overall page styles */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Top bar styles */
         .top-bar {
             display: flex;
-            justify-content: space-between;
+            justify-content: center;
             align-items: center;
             padding: 10px;
             background-color: #333;
@@ -110,9 +106,8 @@
         }
 
         .top-bar h2 {
-            flex-grow: 1;
-            text-align: center;
             margin: 0;
+            font-size: 24px;
         }
 
         .logout-btn {
@@ -126,6 +121,7 @@
             width: 40px;
             height: 40px;
             border-radius: 50%;
+            text-align: center;
         }
 
         .back-home-btn {
@@ -138,10 +134,10 @@
             right: 10px;
         }
 
+        /* Button styles */
         .button-container {
             display: flex;
-            flex-direction: column;
-            align-items: center;
+            justify-content: center;
             margin-top: 20px;
         }
 
@@ -158,24 +154,71 @@
         .button-container button:hover {
             background-color: #45a049;
         }
+
+        /* Link grid and category layout */
+        #links-container {
+            margin: 20px;
+            padding: 20px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around;
+        }
+
+        .category {
+            width: 100%;
+            margin-bottom: 20px;
+        }
+
+        .category h3 {
+            text-align: center;
+            font-size: 22px;
+            margin-bottom: 10px;
+        }
+
+        .link-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 10px;
+            justify-items: center;
+        }
+
+        .link-button {
+            background-color: #2196F3;
+            color: white;
+            padding: 10px;
+            width: 100%;
+            cursor: pointer;
+            border: none;
+            text-align: center;
+            box-sizing: border-box;
+        }
+
+        .link-button:hover {
+            background-color: #0b7dda;
+        }
     </style>
 
 </head>
 <body>
 
+    <!-- Top Bar -->
     <div class="top-bar">
         <button class="logout-btn" onclick="logout()">Logout</button>
         <h2>Profile</h2>
         <button class="back-home-btn" onclick="window.location.href='home.html'">Back to Home</button>
     </div>
 
+    <!-- Add Link Buttons -->
     <div class="button-container">
         <button onclick="addLinkToCategory('proxyLinks')">Add to Proxy Links</button>
         <button onclick="addLinkToCategory('gameLinks')">Add to Game Links</button>
         <button onclick="addLinkToCategory('otherLinks')">Add to Other Links</button>
     </div>
 
-    <button onclick="showAdAndOpenLink()">Click to Watch Ad & Open Link</button>
+    <!-- Links Section -->
+    <div id="links-container">
+        <!-- Links will be dynamically loaded here -->
+    </div>
 
 </body>
 </html>
