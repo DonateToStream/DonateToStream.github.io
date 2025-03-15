@@ -3,207 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Firebase Auth Site</title>
-    <style>
-        body { font-family: Arial, sans-serif; text-align: center; margin: 0; }
-        .container { max-width: 300px; margin: auto; padding-top: 50px; }
-        input, button { display: block; margin: 10px auto; padding: 8px; width: 80%; }
-        nav { background: #333; padding: 10px; }
-        nav ul { list-style-type: none; padding: 0; margin: 0; }
-        nav ul li { display: inline; margin: 0 15px; color: white; cursor: pointer; }
-        .settings-icon { position: absolute; top: 10px; right: 10px; cursor: pointer; color: white; }
-        .hidden { display: none; }
-    </style>
+    <title>Login & Signup</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-
-    <!-- ✅ Login / Signup Page -->
-    <div id="auth-container" class="container">
-        <h2>Login / Signup</h2>
+    <div class="container">
+        <h2>Login or Sign Up</h2>
         <input type="email" id="email" placeholder="Email">
         <input type="password" id="password" placeholder="Password">
         <button onclick="login()">Login</button>
         <button onclick="signup()">Sign Up</button>
-        <button onclick="resetPassword()">Forgot Password?</button>
+        <p><a href="#" onclick="resetPassword()">Forgot Password?</a></p>
         <p id="message"></p>
     </div>
 
-    <!-- ✅ Home Page -->
-    <div id="home-container" class="hidden">
-        <nav>
-            <ul>
-                <li onclick="showTab(1)">Tab 1</li>
-                <li onclick="showTab(2)">Tab 2</li>
-                <li onclick="showTab(3)">Tab 3</li>
-                <li onclick="showTab(4)">Tab 4</li>
-                <li onclick="showTab(5)">Tab 5</li>
-            </ul>
-            <div class="settings-icon" onclick="toggleSettings()">⚙ Settings</div>
-        </nav>
-        <h1>Welcome!</h1>
-        <button onclick="logout()">Logout</button>
-
-        <!-- ✅ Tab Sections -->
-        <div id="tab1" class="tab-content">Content for Tab 1</div>
-        <div id="tab2" class="tab-content hidden">Content for Tab 2</div>
-        <div id="tab3" class="tab-content hidden">Content for Tab 3</div>
-        <div id="tab4" class="tab-content hidden">Content for Tab 4</div>
-        <div id="tab5" class="tab-content hidden">Content for Tab 5</div>
-
-        <!-- ✅ Settings Panel -->
-        <div id="settings-container" class="hidden">
-            <h2>Settings</h2>
-            <input type="email" id="newEmail" placeholder="New Email">
-            <button onclick="changeEmail()">Change Email</button>
-            <input type="password" id="newPassword" placeholder="New Password">
-            <button onclick="changePassword()">Change Password</button>
-        </div>
-    </div>
-
-    <!-- ✅ Firebase Scripts (v8 for compatibility) -->
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
-
-    <script>
-        // ✅ Firebase Config
-        const firebaseConfig = {
-            apiKey: "AIzaSyBxm9scK9bWxue782r8w2xNR_thS1y9-q4",
-            authDomain: "dhjrjtdzjg.firebaseapp.com",
-            databaseURL: "https://dhjrjtdzjg-default-rtdb.firebaseio.com",
-            projectId: "dhjrjtdzjg",
-            storageBucket: "dhjrjtdzjg.firebasestorage.app",
-            messagingSenderId: "548960975194",
-            appId: "1:548960975194:web:fc9596a8cae353883d9b63",
-            measurementId: "G-BPJJSQV4Z6"
-        };
-
-        // ✅ Initialize Firebase
-        firebase.initializeApp(firebaseConfig);
-        const auth = firebase.auth();
-
-        // ✅ UI Functions
-        function showHome() {
-            document.getElementById("auth-container").classList.add("hidden");
-            document.getElementById("home-container").classList.remove("hidden");
-        }
-
-        function showAuth() {
-            document.getElementById("auth-container").classList.remove("hidden");
-            document.getElementById("home-container").classList.add("hidden");
-        }
-
-        function toggleSettings() {
-            document.getElementById("settings-container").classList.toggle("hidden");
-        }
-
-        function showTab(tabNumber) {
-            document.querySelectorAll(".tab-content").forEach(tab => tab.classList.add("hidden"));
-            document.getElementById(`tab${tabNumber}`).classList.remove("hidden");
-        }
-
-        // ✅ Authentication Functions
-        function signup() {
-            const email = document.getElementById("email").value;
-            const password = document.getElementById("password").value;
-            
-            auth.createUserWithEmailAndPassword(email, password)
-            .then(userCredential => {
-                const user = userCredential.user;
-                user.sendEmailVerification().then(() => {
-                    alert("Verification email sent! Please check your inbox.");
-                    auth.signOut(); // Force user to verify before login
-                });
-            })
-            .catch(error => document.getElementById("message").textContent = error.message);
-        }
-
-        function login() {
-            const email = document.getElementById("email").value;
-            const password = document.getElementById("password").value;
-            
-            auth.signInWithEmailAndPassword(email, password)
-            .then(userCredential => {
-                const user = userCredential.user;
-                if (!user.emailVerified) {
-                    alert("Please verify your email before logging in.");
-                    auth.signOut();
-                } else {
-                    showHome();
-                }
-            })
-            .catch(error => document.getElementById("message").textContent = error.message);
-        }
-
-        function logout() {
-            auth.signOut().then(() => showAuth());
-        }
-
-        function resetPassword() {
-            const email = document.getElementById("email").value;
-            auth.sendPasswordResetEmail(email)
-            .then(() => alert("Password reset email sent!"))
-            .catch(error => alert(error.message));
-        }
-
-        function changeEmail() {
-    const user = auth.currentUser;
-    const newEmail = document.getElementById("newEmail").value;
-
-    if (!user) {
-        alert("No user is logged in.");
-        return;
-    }
-
-    if (!newEmail.includes("@")) {
-        alert("Invalid email format.");
-        return;
-    }
-
-    // Prompt for password re-authentication
-    const password = prompt("Enter your current password to confirm email change:");
-    if (!password) {
-        alert("Password is required to change email.");
-        return;
-    }
-
-    const credential = firebase.auth.EmailAuthProvider.credential(user.email, password);
-
-    // Re-authenticate the user
-    user.reauthenticateWithCredential(credential)
-        .then(() => {
-            // Update the email after successful re-authentication
-            user.updateEmail(newEmail)
-                .then(() => {
-                    alert("Email updated successfully! A verification email has been sent.");
-                    user.sendEmailVerification(); // Send verification to new email
-                })
-                .catch(error => {
-                    alert("Error updating email: " + error.message);
-                });
-        })
-        .catch(error => {
-            alert("Re-authentication failed: " + error.message);
-        });
-}
-
-        function changePassword() {
-            const user = auth.currentUser;
-            const newPassword = document.getElementById("newPassword").value;
-            if (user) {
-                user.updatePassword(newPassword)
-                .then(() => alert("Password updated!"))
-                .catch(error => alert(error.message));
-            }
-        }
-
-        // ✅ Check if user is already logged in
-        auth.onAuthStateChanged(user => {
-            if (user && user.emailVerified) {
-                showHome();
-            } else {
-                showAuth();
-            }
-        });
-    </script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js"></script>
+    <script src="firebase-config.js"></script>
+    <script src="app.js"></script>
 </body>
 </html>
