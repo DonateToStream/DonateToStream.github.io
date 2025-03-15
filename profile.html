@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ad Click & Link Validation</title>
+    
+    <link rel="stylesheet" href="style.css">
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
+
+    <!-- Import Firebase Config -->
+    <script src="firebase-console.js"></script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            // Redirect to the base site if not logged in
+            firebase.auth().onAuthStateChanged(user => {
+                if (!user) {
+                    window.location.href = "https://donatetostream.github.io/";
+                }
+            });
+
+            // Initialize Firebase Database
+            const db = firebase.database();
+
+            window.showAdAndOpenLink = function() {
+                alert("Playing Ad...");
+                setTimeout(() => {
+                    db.ref("links").once("value").then(snapshot => {
+                        let links = snapshot.val();
+                        if (!links) {
+                            alert("No links available.");
+                            return;
+                        }
+                        let firstLinkKey = Object.keys(links)[0];
+                        let firstLink = links[firstLinkKey];
+
+                        if (firstLink) {
+                            window.open(firstLink.url, "_blank");
+                            checkLinkStatus(firstLinkKey, firstLink.url);
+                        }
+                    });
+                }, 3000); // Simulating ad duration
+            };
+
+            function checkLinkStatus(linkKey, url) {
+                let confirmationBox = document.createElement("div");
+                confirmationBox.innerHTML = `
+                    <div style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); 
+                                background: white; padding: 20px; border: 1px solid black; text-align: center; z-index: 1000;">
+                        <p>Is this link still in service?</p>
+                        <button onclick="voteOnLink('${linkKey}', true)">Yes</button>
+                        <button onclick="voteOnLink('${linkKey}', false)">No</button>
+                    </div>
+                `;
+                document.body.appendChild(confirmationBox);
+            }
+
+            window.voteOnLink = function(linkKey, isWorking) {
+                const linkRef = db.ref(`links/${linkKey}/votes`);
+
+                linkRef.transaction(votes => {
+                    if (!votes) votes = { yes: 0, no: 0 };
+                    if (isWorking) {
+                        votes.yes += 1;
+                    } else {
+                        votes.no += 1;
+                        if (votes.no >= 10) {
+                            db.ref(`links/${linkKey}`).remove();
+                            alert("Link removed due to 10 'No' votes.");
+                        }
+                    }
+                    return votes;
+                });
+
+                document.querySelector("div").remove();
+            };
+
+            // Logout function
+            window.logout = function() {
+                firebase.auth().signOut().then(() => {
+                    window.location.href = "https://donatetostream.github.io/";
+                });
+            };
+        });
+    </script>
+</head>
+<body>
+
+    <div class="top-bar">
+        <h2>Ad Page</h2>
+        <button id="logout-btn" onclick="logout()">Logout</button>
+        <a href="settings.html" class="settings-icon">⚙️</a>
+    </div>
+
+    <button onclick="showAdAndOpenLink()">Click to Watch Ad & Open Link</button>
+
+</body>
+</html>
