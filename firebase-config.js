@@ -12,3 +12,21 @@ const firebaseConfig = {
 
 // Initialize Firebase (using compat mode)
 firebase.initializeApp(firebaseConfig);
+
+// Reference to database
+const db = firebase.database();
+
+// Ensure at least one link exists in Firebase
+function createDefaultLink() {
+    db.ref("links").once("value").then(snapshot => {
+        if (!snapshot.exists()) {
+            db.ref("links/link1").set({
+                url: "https://example.com", // Change this to a real site
+                votes: { yes: 0, no: 0 }
+            });
+        }
+    });
+}
+
+// Call this function when the page loads
+createDefaultLink();
