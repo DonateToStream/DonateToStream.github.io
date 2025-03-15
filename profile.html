@@ -54,7 +54,7 @@
                             const linkButton = document.createElement("button");
                             linkButton.classList.add("link-button");
                             linkButton.innerText = link.url;
-                            linkButton.onclick = () => window.open(link.url, "_blank");
+                            linkButton.onclick = () => showAdAndOpenLink(link.url);
 
                             linkGrid.appendChild(linkButton);
                         }
@@ -64,16 +64,27 @@
                 });
             }
 
-            window.addLinkToCategory = function(category) {
-                const url = prompt("Enter the link URL:");
-                if (url) {
-                    const newLinkKey = db.ref(`links/${category}`).push().key;
-                    db.ref(`links/${category}/${newLinkKey}`).set({ url: url }).then(() => {
-                        alert("Link added successfully to " + category);
-                        loadLinks(); // Reload links after adding
-                    });
-                }
-            };
+            // Show ad and then open the link
+            function showAdAndOpenLink(url) {
+                // Simulating an ad display
+                const adModal = document.createElement("div");
+                adModal.classList.add("ad-modal");
+                adModal.innerHTML = `
+                    <div class="ad-content">
+                        <h2>Enjoy this short ad!</h2>
+                        <p>Ad content goes here</p>
+                        <button onclick="openLink('${url}')">Close Ad and Go to Link</button>
+                    </div>
+                `;
+                document.body.appendChild(adModal);
+            }
+
+            // Open the link in a new tab after the ad
+            function openLink(url) {
+                window.open(url, "_blank");
+                const adModal = document.querySelector(".ad-modal");
+                adModal.remove();  // Close the ad modal
+            }
 
             // Load the links when the page is loaded
             loadLinks();
@@ -196,6 +207,42 @@
         .link-button:hover {
             background-color: #0b7dda;
         }
+
+        /* Modal (Ad) Styles */
+        .ad-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .ad-content {
+            background-color: white;
+            padding: 20px;
+            text-align: center;
+            border-radius: 8px;
+            max-width: 500px;
+            width: 80%;
+        }
+
+        .ad-content button {
+            background-color: green;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            cursor: pointer;
+            margin-top: 15px;
+        }
+
+        .ad-content button:hover {
+            background-color: #45a049;
+        }
     </style>
 
 </head>
@@ -206,13 +253,6 @@
         <button class="logout-btn" onclick="logout()">Logout</button>
         <h2>Profile</h2>
         <button class="back-home-btn" onclick="window.location.href='home.html'">Back to Home</button>
-    </div>
-
-    <!-- Add Link Buttons -->
-    <div class="button-container">
-        <button onclick="addLinkToCategory('proxyLinks')">Add to Proxy Links</button>
-        <button onclick="addLinkToCategory('gameLinks')">Add to Game Links</button>
-        <button onclick="addLinkToCategory('otherLinks')">Add to Other Links</button>
     </div>
 
     <!-- Links Section -->
