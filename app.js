@@ -43,6 +43,27 @@ function changeEmail() {
     }
 }
 
+// Firebase Recaptcha
+window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container');
+
+// Send OTP
+function sendOTP() {
+    let phoneNumber = document.getElementById("phone-number").value;
+    firebase.auth().signInWithPhoneNumber(phoneNumber, window.recaptchaVerifier)
+        .then((confirmationResult) => {
+            window.confirmationResult = confirmationResult;
+            alert("OTP Sent! Check your phone.");
+        }).catch(error => alert(error.message));
+}
+
+// Verify OTP
+function verifyOTP() {
+    let code = document.getElementById("otp-code").value;
+    window.confirmationResult.confirm(code)
+        .then(() => alert("Phone Number Verified!"))
+        .catch(error => alert(error.message));
+}
+
 // Login with Email Link
 function sendLoginLink() {
     let email = document.getElementById("email").value;
