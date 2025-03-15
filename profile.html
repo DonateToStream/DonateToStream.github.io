@@ -61,6 +61,9 @@
 
                         categoryDiv.appendChild(linkGrid);
                     }
+                }).catch(error => {
+                    console.error("Error fetching links from Firebase:", error);
+                    linksContainer.innerHTML = "<p>Error fetching links</p>";
                 });
             }
 
