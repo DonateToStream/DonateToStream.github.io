@@ -1,9 +1,7 @@
-// Import Firebase modules
-import { initializeApp } from "firebase/app";
-import { getDatabase, ref, get, set, push, onValue } from "firebase/database";
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js';
+import { getDatabase, ref, set, get, child, update } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js';
 
-// Firebase configuration
-// Initialize Firebase
+// Your Firebase config
 const firebaseConfig = {
   apiKey: "AIzaSyBwi9qr6AB7gva6RKCRHkuMlIG7fK_skgw",
   authDomain: "page-f987b.firebaseapp.com",
@@ -17,7 +15,10 @@ const firebaseConfig = {
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
-const db = getDatabase(app);
+const database = getDatabase(app);
+
+// Add functions for data manipulation as needed
+
 
 // Reference to the buttons in Realtime Database
 const buttonsRef = ref(db, "presetButtons");
