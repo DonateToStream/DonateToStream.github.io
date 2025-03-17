@@ -1,56 +1,108 @@
+/* General Page Styling */
 body {
-    background-color: #000; /* Black background */
-    color: #0f0; /* Neon green text */
-    font-family: "Courier New", monospace; /* Hacker terminal font */
-    text-align: center;
-    margin: 0;
-    padding: 0;
+  background-color: black;
+  color: #00ff00; /* Neon green text */
+  font-family: "Courier New", Courier, monospace;
+  text-align: center;
 }
 
-nav {
-    background-color: #111;
-    padding: 15px;
-    display: flex;
-    justify-content: center;
-    gap: 20px;
-    border-bottom: 2px solid #0f0;
+/* Links */
+a {
+  color: #00ff00;
+  text-decoration: none;
+  transition: 0.3s;
 }
 
-nav a {
-    color: #0f0;
-    text-decoration: none;
-    font-weight: bold;
-    font-size: 18px;
-    transition: 0.3s;
+a:hover {
+  color: #00cc00;
+  text-shadow: 0 0 5px #00ff00;
 }
 
-nav a:hover {
-    color: #ff0; /* Yellow glow */
-    text-shadow: 0px 0px 10px #ff0;
-}
-
-.container {
-    padding: 20px;
-}
-
+/* Buttons */
 button {
-    background-color: black;
-    border: 2px solid #0f0;
-    padding: 10px;
-    color: #0f0;
-    cursor: pointer;
-    margin: 5px;
-    font-size: 16px;
-    font-family: "Courier New", monospace;
-    transition: 0.3s;
+  background-color: black;
+  color: #00ff00;
+  border: 2px solid #00ff00;
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: 0.3s;
+  font-family: "Courier New", Courier, monospace;
 }
 
 button:hover {
-    background-color: #0f0;
-    color: black;
-    text-shadow: 0px 0px 5px #0f0;
+  background-color: #00ff00;
+  color: black;
+  text-shadow: 0 0 5px black;
 }
 
-h1, h2 {
-    text-shadow: 0px 0px 10px #0f0;
+/* Input Fields */
+input, textarea {
+  background-color: black;
+  color: #00ff00;
+  border: 2px solid #00ff00;
+  padding: 5px;
+  font-family: "Courier New", Courier, monospace;
+}
+
+input::placeholder, textarea::placeholder {
+  color: #00cc00;
+}
+
+/* Hacker Console Effect */
+.terminal {
+  background-color: #002200;
+  border: 2px solid #00ff00;
+  padding: 20px;
+  width: 80%;
+  margin: auto;
+  text-align: left;
+  box-shadow: 0 0 10px #00ff00;
+  font-size: 14px;
+  overflow: hidden;
+}
+
+/* Glitchy Text Animation */
+@keyframes glitch {
+  0% { text-shadow: 0 0 5px #00ff00; }
+  25% { text-shadow: 2px 2px #00ff00, -2px -2px #00cc00; }
+  50% { text-shadow: -2px -2px #00ff00, 2px 2px #00cc00; }
+  75% { text-shadow: 2px -2px #00ff00, -2px 2px #00cc00; }
+  100% { text-shadow: 0 0 5px #00ff00; }
+}
+
+.glitch-text {
+  font-weight: bold;
+  font-size: 20px;
+  animation: glitch 0.5s infinite alternate;
+}
+
+/* Table Styling */
+table {
+  width: 90%;
+  margin: auto;
+  border-collapse: collapse;
+}
+
+th, td {
+  border: 1px solid #00ff00;
+  padding: 10px;
+}
+
+th {
+  background-color: #003300;
+}
+
+td {
+  background-color: #001a00;
+}
+
+/* Flickering Background */
+@keyframes flicker {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.8; }
+}
+
+.flicker {
+  animation: flicker 0.5s infinite alternate;
 }
