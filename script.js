@@ -1,7 +1,8 @@
+// Import Firebase modules
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js';
-import { getDatabase, ref, set, get, child, update } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js';
+import { getDatabase, ref, get } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js';
 
-// Your Firebase config
+// Your Firebase configuration (Replace with your actual config)
 const firebaseConfig = {
   apiKey: "AIzaSyBwi9qr6AB7gva6RKCRHkuMlIG7fK_skgw",
   authDomain: "page-f987b.firebaseapp.com",
@@ -15,55 +16,35 @@ const firebaseConfig = {
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
-const database = getDatabase(app);
 
-// Add functions for data manipulation as needed
+// Initialize Realtime Database
+const db = getDatabase(app);
 
+// Reference to the 'links' data in Firebase
+const linksRef = ref(db, 'links');
 
-// Reference to the buttons in Realtime Database
-const buttonsRef = ref(db, "presetButtons");
-
-// Function to load buttons from Firebase
-function loadPresetButtons() {
-  onValue(buttonsRef, (snapshot) => {
-    const buttonsContainer = document.getElementById("buttonsContainer");
-    buttonsContainer.innerHTML = ""; // Clear previous buttons
-
+// Fetch links from Firebase Realtime Database
+get(linksRef).then((snapshot) => {
     if (snapshot.exists()) {
-      const buttons = snapshot.val();
-      Object.keys(buttons).forEach((key) => {
-        const buttonData = buttons[key];
-        const button = document.createElement("button");
-        button.textContent = buttonData.label;
-        button.onclick = () => alert(`Button clicked: ${buttonData.action}`);
-        buttonsContainer.appendChild(button);
-      });
+        const links = snapshot.val();
+        const container = document.getElementById("linksContainer");
+
+        // Loop through each link and display it
+        for (const [key, link] of Object.entries(links)) {
+            const linkElement = document.createElement('a');
+            linkElement.href = link.url;
+            linkElement.textContent = link.name;
+            linkElement.target = "_blank";
+            container.appendChild(linkElement);
+            container.appendChild(document.createElement('br')); // Add a line break
+        }
     } else {
-      buttonsContainer.innerHTML = "<p>No preset buttons found.</p>";
+        console.log("No links found in the database.");
     }
-  });
-}
+}).catch((error) => {
+    console.error("Error fetching data from Firebase:", error);
+});
 
-// Function to add a new preset button
-function addPresetButton(label, action) {
-  const newButtonRef = push(buttonsRef);
-  set(newButtonRef, {
-    label: label,
-    action: action
-  }).then(() => console.log("Button added successfully!"));
-}
-
-// Load buttons on page load
-window.onload = () => {
-  loadPresetButtons();
-};
-
-// Example: Add test preset buttons (only needed for first-time setup)
-function addTestButtons() {
-  addPresetButton("Google", "https://google.com");
-  addPresetButton("YouTube", "https://youtube.com");
-  addPresetButton("GitHub", "https://github.com");
-}
 
 // Uncomment below to run once and populate test buttons
 // addTestButtons();
