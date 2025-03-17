@@ -1,15 +1,38 @@
 // Firebase Config (Replace with your details)
 const firebaseConfig = {
-    apiKey: "YOUR_API_KEY",
-    authDomain: "YOUR_AUTH_DOMAIN",
-    projectId: "YOUR_PROJECT_ID",
-    storageBucket: "YOUR_STORAGE_BUCKET",
-    messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-    appId: "YOUR_APP_ID"
+  apiKey: "AIzaSyBxm9scK9bWxue782r8w2xNR_thS1y9-q4",
+  authDomain: "dhjrjtdzjg.firebaseapp.com",
+  databaseURL: "https://dhjrjtdzjg-default-rtdb.firebaseio.com",
+  projectId: "dhjrjtdzjg",
+  storageBucket: "dhjrjtdzjg.firebasestorage.app",
+  messagingSenderId: "548960975194",
+  appId: "1:548960975194:web:fc9596a8cae353883d9b63",
 };
 
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
+
+// Function to add test links (only runs once)
+async function addTestLinks() {
+    const gamesRef = db.collection("games").doc("example-game");
+    const proxysRef = db.collection("proxys").doc("example-proxy");
+
+    if (!(await gamesRef.get()).exists) {
+        await gamesRef.set({
+            url: "https://examplegame.com",
+            upvotes: 0,
+            downvotes: 0
+        });
+    }
+
+    if (!(await proxysRef.get()).exists) {
+        await proxysRef.set({
+            url: "https://exampleproxy.com",
+            upvotes: 0,
+            downvotes: 0
+        });
+    }
+}
 
 // Load links from Firebase
 async function loadLinks(category, elementId) {
@@ -19,14 +42,14 @@ async function loadLinks(category, elementId) {
     listDiv.innerHTML = ""; // Clear previous content
     querySnapshot.forEach(doc => {
         const data = doc.data();
-        const linkId = doc.id;
+        const linkName = doc.id; // Using document ID as name
 
         const div = document.createElement("div");
         div.innerHTML = `
-            <p>${data.name}</p>
-            <button onclick="openLink('${category}', '${linkId}', '${data.url}')">Open in New Tab</button>
-            <button onclick="vote('${category}', '${linkId}', 'up')">👍 ${data.upvotes}</button>
-            <button onclick="vote('${category}', '${linkId}', 'down')">👎 ${data.downvotes}</button>
+            <p>${linkName}</p>
+            <button onclick="openLink('${category}', '${linkName}', '${data.url}')">Open in New Tab</button>
+            <button onclick="vote('${category}', '${linkName}', 'up')">👍 ${data.upvotes}</button>
+            <button onclick="vote('${category}', '${linkName}', 'down')">👎 ${data.downvotes}</button>
         `;
         listDiv.appendChild(div);
     });
@@ -68,7 +91,8 @@ async function vote(category, id, type) {
 }
 
 // Load links when the page loads
-window.onload = () => {
+window.onload = async () => {
+    await addTestLinks(); // Create test links if they don't exist
     loadLinks("games", "games-list");
     loadLinks("proxys", "proxys-list");
 };
