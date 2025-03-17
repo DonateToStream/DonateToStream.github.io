@@ -9,7 +9,10 @@ const firebaseConfig = {
   appId: "1:548960975194:web:fc9596a8cae353883d9b63",
 };
 
+// Initialize Firebase
 firebase.initializeApp(firebaseConfig);
+
+// Initialize Firestore
 const db = firebase.firestore();
 
 // Function to add test links (only runs once)
