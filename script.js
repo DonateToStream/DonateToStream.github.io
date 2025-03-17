@@ -45,6 +45,24 @@ get(linksRef).then((snapshot) => {
     console.error("Error fetching data from Firebase:", error);
 });
 
+// This function is used to add test preset links to Firebase
+function addTestLinks() {
+  const links = [
+    { name: 'Google', url: 'https://www.google.com' },
+    { name: 'Facebook', url: 'https://www.facebook.com' },
+    { name: 'Twitter', url: 'https://www.twitter.com' }
+  ];
 
+  const linksRef = firebase.database().ref('links');
+
+  // Add links to Firebase (only once for testing)
+  links.forEach(link => {
+    const newLinkRef = linksRef.push();
+    newLinkRef.set(link);
+  });
+}
+
+// Uncomment the following line to add test links only once (for testing purposes)
+// addTestLinks()
 // Uncomment below to run once and populate test buttons
 // addTestButtons();
