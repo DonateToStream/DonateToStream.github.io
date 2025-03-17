@@ -1,26 +1,67 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hacker Links</title>
-    <link rel="stylesheet" href="styles.css">
-    <link rel="stylesheet" href="style.css">
-    <script defer src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
-    <script defer src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
-    <script type="module" src="script.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Links Page</title>
+  <link rel="stylesheet" href="style.css"> <!-- Link to style.css -->
+  <!-- Firebase SDK -->
+  <script type="module" src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
+  <script type="module" src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js"></script>
 </head>
 <body>
-    <nav>
-        <a href="index.html">[ HOME ]</a>
-        <a href="links.html">[ LINKS ]</a>
-    </nav>
-    <div class="container">
-        <h1>🔗 Available Links</h1>
-        <h2>💻 Games</h2>
-        <div id="games-list"></div>
-        <h2>🌐 Proxys</h2>
-        <div id="proxys-list"></div>
-    </div>
+
+  <h1>Links Page</h1>
+
+  <!-- Container for dynamic links -->
+  <div id="links-container">
+    <!-- Links will be appended here -->
+  </div>
+
+  <!-- Firebase configuration (Replace with your actual Firebase project config) -->
+  <script>
+    // Firebase Configuration
+const firebaseConfig = {
+  apiKey: "AIzaSyBwi9qr6AB7gva6RKCRHkuMlIG7fK_skgw",
+  authDomain: "page-f987b.firebaseapp.com",
+  databaseURL: "https://page-f987b-default-rtdb.firebaseio.com",
+  projectId: "page-f987b",
+  storageBucket: "page-f987b.firebasestorage.app",
+  messagingSenderId: "35855630111",
+  appId: "1:35855630111:web:baef629e6febeaf314fa2a",
+  measurementId: "G-JFHTRJ749R"
+};  // Initialize Firebase
+    const app = firebase.initializeApp(firebaseConfig);
+    const db = firebase.database(app);
+
+    // Reference to the 'links' in the database
+    const linksRef = db.ref('links');
+
+    // Fetch the links from Firebase
+    linksRef.on('value', function(snapshot) {
+      const linksContainer = document.getElementById('links-container');
+      linksContainer.innerHTML = ''; // Clear the existing links
+
+      snapshot.forEach(function(childSnapshot) {
+        const linkData = childSnapshot.val();
+        const linkElement = document.createElement('div');
+        const linkButton = document.createElement('button');
+        linkButton.innerText = linkData.name;
+        linkButton.onclick = () => {
+          if (confirm("Do you want to open this link?")) {
+            window.open(linkData.url, '_blank');
+          }
+        };
+        linkElement.appendChild(linkButton);
+        linksContainer.appendChild(linkElement);
+      });
+    });
+  </script>
+
+  <script src="script.js"></script>
+</body>
+</html>
+
+  <script src="script.js"></script>
 </body>
 </html>
