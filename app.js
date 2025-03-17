@@ -1,127 +1,74 @@
-// Firebase Authentication
-const auth = firebase.auth();
-
-// Signup Function
-function signup() {
-    let email = document.getElementById("email").value;
-    let password = document.getElementById("password").value;
-
-    auth.createUserWithEmailAndPassword(email, password)
-        .then((userCredential) => {
-            userCredential.user.sendEmailVerification();
-            alert("Signup successful! Check your email for verification.");
-        })
-        .catch(error => alert(error.message));
-}
-
-// Login Function
-function login() {
-    let email = document.getElementById("email").value;
-    let password = document.getElementById("password").value;
-
-    auth.signInWithEmailAndPassword(email, password)
-        .then(() => window.location.href = "home.html")
-        .catch(error => alert(error.message));
-}
-
-// Logout Function
-function logout() {
-    auth.signOut().then(() => window.location.href = "index.html");
-}
-
-// Change Email Function
-function changeEmail() {
-    let newEmail = document.getElementById("new-email").value;
-    let user = firebase.auth().currentUser;
-
-    if (user) {
-        user.verifyBeforeUpdateEmail(newEmail)
-            .then(() => alert("Email change request sent! Verify the new email to confirm."))
-            .catch(error => alert(error.message));
-    } else {
-        alert("You must be logged in to change your email.");
-    }
-}
-
-// Firebase Recaptcha
-window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container');
-
-// Send OTP
-function sendOTP() {
-    let phoneNumber = document.getElementById("phone-number").value;
-    firebase.auth().signInWithPhoneNumber(phoneNumber, window.recaptchaVerifier)
-        .then((confirmationResult) => {
-            window.confirmationResult = confirmationResult;
-            alert("OTP Sent! Check your phone.");
-        }).catch(error => alert(error.message));
-}
-
-// Verify OTP
-function verifyOTP() {
-    let code = document.getElementById("otp-code").value;
-    window.confirmationResult.confirm(code)
-        .then(() => alert("Phone Number Verified!"))
-        .catch(error => alert(error.message));
-}
-
-// Login with Email Link
-function sendLoginLink() {
-    let email = document.getElementById("email").value;
-    let actionCodeSettings = {
-        url: window.location.href, // Redirect back to the site
-        handleCodeInApp: true
-    };
-
-    firebase.auth().sendSignInLinkToEmail(email, actionCodeSettings)
-        .then(() => {
-            alert("Check your email for a login link.");
-            localStorage.setItem("emailForSignIn", email); // Store for later
-        })
-        .catch(error => alert(error.message));
-}
-
-// Completing the Login
-window.onload = function () {
-    if (firebase.auth().isSignInWithEmailLink(window.location.href)) {
-        let email = localStorage.getItem("emailForSignIn");
-        if (!email) email = prompt("Please enter your email:");
-
-        firebase.auth().signInWithEmailLink(email, window.location.href)
-            .then(() => {
-                alert("Login successful!");
-                localStorage.removeItem("emailForSignIn");
-                window.location.href = "home.html";
-            })
-            .catch(error => alert(error.message));
-    }
+// Firebase Config (Replace with your details)
+const firebaseConfig = {
+    apiKey: "YOUR_API_KEY",
+    authDomain: "YOUR_AUTH_DOMAIN",
+    projectId: "YOUR_PROJECT_ID",
+    storageBucket: "YOUR_STORAGE_BUCKET",
+    messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+    appId: "YOUR_APP_ID"
 };
 
-// Reset Password
-function resetPassword() {
-    let email = document.getElementById("email").value;
-    auth.sendPasswordResetEmail(email)
-        .then(() => alert("Password reset email sent."))
-        .catch(error => alert(error.message));
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+
+// Load links from Firebase
+async function loadLinks(category, elementId) {
+    const listDiv = document.getElementById(elementId);
+    const querySnapshot = await db.collection(category).get();
+
+    listDiv.innerHTML = ""; // Clear previous content
+    querySnapshot.forEach(doc => {
+        const data = doc.data();
+        const linkId = doc.id;
+
+        const div = document.createElement("div");
+        div.innerHTML = `
+            <p>${data.name}</p>
+            <button onclick="openLink('${category}', '${linkId}', '${data.url}')">Open in New Tab</button>
+            <button onclick="vote('${category}', '${linkId}', 'up')">👍 ${data.upvotes}</button>
+            <button onclick="vote('${category}', '${linkId}', 'down')">👎 ${data.downvotes}</button>
+        `;
+        listDiv.appendChild(div);
+    });
 }
 
-function enable2FA() {
-    alert("Firebase 2FA (via SMS or app) must be set up in Firebase Console.");
+// Handle opening links with a prompt
+function openLink(category, id, url) {
+    alert("Before you go, open the site in a new tab and come back to vote if it's up or blocked.");
+    window.open(url, "_blank");
 }
 
-function disable2FA() {
-    alert("Disabling 2FA needs backend logic with Firebase Admin SDK.");
-}
+// Handle voting
+async function vote(category, id, type) {
+    const docRef = db.collection(category).doc(id);
+    const doc = await docRef.get();
 
-// Change Password (Requires Reauthentication)
-function changePassword() {
-    let newPassword = document.getElementById("new-password").value;
-    let user = auth.currentUser;
+    if (!doc.exists) return;
+    let data = doc.data();
 
-    if (user) {
-        user.updatePassword(newPassword)
-            .then(() => alert("Password updated successfully!"))
-            .catch(error => alert(error.message));
+    if (type === "up") {
+        data.upvotes = (data.upvotes || 0) + 1;
     } else {
-        alert("You must be logged in to change your password.");
+        data.downvotes = (data.downvotes || 0) + 1;
     }
+
+    // If downvotes reach 10, delete the link
+    if (data.downvotes >= 10) {
+        await docRef.delete();
+        alert("This link has been removed due to too many downvotes.");
+    } else {
+        await docRef.update({
+            upvotes: data.upvotes,
+            downvotes: data.downvotes
+        });
+    }
+
+    loadLinks("games", "games-list");
+    loadLinks("proxys", "proxys-list");
 }
+
+// Load links when the page loads
+window.onload = () => {
+    loadLinks("games", "games-list");
+    loadLinks("proxys", "proxys-list");
+};
