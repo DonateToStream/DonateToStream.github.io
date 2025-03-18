@@ -1,68 +1,116 @@
-// Import Firebase modules
-import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js';
-import { getDatabase, ref, get } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js';
-
-// Your Firebase configuration (Replace with your actual config)
+// 🔥 Firebase Config - Replace with your details
 const firebaseConfig = {
-  apiKey: "AIzaSyBwi9qr6AB7gva6RKCRHkuMlIG7fK_skgw",
-  authDomain: "page-f987b.firebaseapp.com",
-  databaseURL: "https://page-f987b-default-rtdb.firebaseio.com",
-  projectId: "page-f987b",
-  storageBucket: "page-f987b.firebasestorage.app",
-  messagingSenderId: "35855630111",
-  appId: "1:35855630111:web:baef629e6febeaf314fa2a",
-  measurementId: "G-JFHTRJ749R"
+    apiKey: "AIzaSyBxm9scK9bWxue782r8w2xNR_thS1y9-q4",
+    authDomain: "dhjrjtdzjg.firebaseapp.com",
+    databaseURL: "https://dhjrjtdzjg-default-rtdb.firebaseio.com",
+    projectId: "dhjrjtdzjg",
+    storageBucket: "dhjrjtdzjg.firebasestorage.app",
+    messagingSenderId: "548960975194",
+    appId: "1:548960975194:web:fc9596a8cae353883d9b63"
 };
 
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
 
-// Initialize Realtime Database
-const db = getDatabase(app);
-
-// Reference to the 'links' data in Firebase
-const linksRef = ref(db, 'links');
-
-// Fetch links from Firebase Realtime Database
-get(linksRef).then((snapshot) => {
-    if (snapshot.exists()) {
-        const links = snapshot.val();
-        const container = document.getElementById("linksContainer");
-
-        // Loop through each link and display it
-        for (const [key, link] of Object.entries(links)) {
-            const linkElement = document.createElement('a');
-            linkElement.href = link.url;
-            linkElement.textContent = link.name;
-            linkElement.target = "_blank";
-            container.appendChild(linkElement);
-            container.appendChild(document.createElement('br')); // Add a line break
-        }
-    } else {
-        console.log("No links found in the database.");
-    }
-}).catch((error) => {
-    console.error("Error fetching data from Firebase:", error);
+document.addEventListener("DOMContentLoaded", () => {
+    initializeDatabase();
+    loadLinks();
 });
 
-// This function is used to add test preset links to Firebase
-function addTestLinks() {
-  const links = [
-    { name: 'Google', url: 'https://www.google.com' },
-    { name: 'Facebook', url: 'https://www.facebook.com' },
-    { name: 'Twitter', url: 'https://www.twitter.com' }
-  ];
-
-  const linksRef = firebase.database().ref('links');
-
-  // Add links to Firebase (only once for testing)
-  links.forEach(link => {
-    const newLinkRef = linksRef.push();
-    newLinkRef.set(link);
-  });
+function showPage(page) {
+    document.querySelectorAll(".page").forEach(p => p.style.display = "none");
+    document.getElementById(page).style.display = "block";
 }
 
-// Uncomment the following line to add test links only once (for testing purposes)
-// addTestLinks()
-// Uncomment below to run once and populate test buttons
-// addTestButtons();
+// 🚀 Automatically adds sample data if Firebase is empty
+function initializeDatabase() {
+    const sampleData = {
+        "proxy-links": {
+            "example-proxy-1": {
+                "name": "Example Proxy 1",
+                "url": "https://example.com",
+                "upvotes": 0,
+                "downvotes": 0
+            },
+            "example-proxy-2": {
+                "name": "Example Proxy 2",
+                "url": "https://proxy.com",
+                "upvotes": 0,
+                "downvotes": 0
+            }
+        },
+        "game-links": {
+            "example-game-1": {
+                "name": "Example Game 1",
+                "url": "https://game.com",
+                "upvotes": 0,
+                "downvotes": 0
+            },
+            "example-game-2": {
+                "name": "Example Game 2",
+                "url": "https://anothergame.com",
+                "upvotes": 0,
+                "downvotes": 0
+            }
+        }
+    };
+
+    Object.keys(sampleData).forEach(category => {
+        db.ref(category).once("value", snapshot => {
+            if (!snapshot.exists()) {
+                db.ref(category).set(sampleData[category]);
+            }
+        });
+    });
+}
+
+// 🔄 Loads links dynamically from Firebase
+function loadLinks() {
+    ["proxy", "game"].forEach(category => {
+        db.ref(category + "-links").on("value", snapshot => {
+            const linksDiv = document.getElementById(category + "-links");
+            linksDiv.innerHTML = "";
+            snapshot.forEach(child => {
+                const data = child.val();
+                if (data.downvotes >= 10) return;
+                const btn = document.createElement("button");
+                btn.innerText = data.name;
+                btn.onclick = () => showVotePopup(child.key, data.url, category);
+                linksDiv.appendChild(btn);
+            });
+        });
+    });
+}
+
+// 🗳️ Displays the voting popup
+function showVotePopup(key, url, category) {
+    const popup = document.getElementById("vote-popup");
+    popup.style.display = "block";
+
+    document.getElementById("vote-yes").onclick = () => {
+        voteLink(key, category, "upvotes");
+        popup.style.display = "none";
+    };
+
+    document.getElementById("vote-no").onclick = () => {
+        voteLink(key, category, "downvotes");
+        popup.style.display = "none";
+    };
+
+    setTimeout(() => window.open(url, "_blank"), 500);
+}
+
+// ✅ Handles upvotes and downvotes
+function voteLink(key, category, type) {
+    const ref = db.ref(category + "-links/" + key);
+    ref.once("value").then(snapshot => {
+        let data = snapshot.val();
+        data[type] = (data[type] || 0) + 1;
+        if (data.downvotes >= 10) {
+            ref.remove();
+        } else {
+            ref.set(data);
+        }
+        loadLinks();
+    });
+}
