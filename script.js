@@ -1,4 +1,4 @@
-// 🔥 Firebase Config - Replace with your details
+// 🔥 Firebase Config
 const firebaseConfig = {
     apiKey: "AIzaSyBxm9scK9bWxue782r8w2xNR_thS1y9-q4",
     authDomain: "dhjrjtdzjg.firebaseapp.com",
@@ -9,6 +9,7 @@ const firebaseConfig = {
     appId: "1:548960975194:web:fc9596a8cae353883d9b63"
 };
 
+// Initialize Firebase
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 
@@ -22,7 +23,7 @@ function showPage(page) {
     document.getElementById(page).style.display = "block";
 }
 
-// 🚀 Automatically adds sample data if Firebase is empty
+// 🚀 Auto-create sample data if Firebase is empty
 function initializeDatabase() {
     const sampleData = {
         "proxy-links": {
@@ -64,7 +65,7 @@ function initializeDatabase() {
     });
 }
 
-// 🔄 Loads links dynamically from Firebase
+// 🔄 Load links dynamically from Firebase
 function loadLinks() {
     ["proxy", "game"].forEach(category => {
         db.ref(category + "-links").on("value", snapshot => {
@@ -82,7 +83,7 @@ function loadLinks() {
     });
 }
 
-// 🗳️ Displays the voting popup
+// 🗳️ Voting system
 function showVotePopup(key, url, category) {
     const popup = document.getElementById("vote-popup");
     popup.style.display = "block";
@@ -100,7 +101,7 @@ function showVotePopup(key, url, category) {
     setTimeout(() => window.open(url, "_blank"), 500);
 }
 
-// ✅ Handles upvotes and downvotes
+// ✅ Handle upvotes and downvotes
 function voteLink(key, category, type) {
     const ref = db.ref(category + "-links/" + key);
     ref.once("value").then(snapshot => {
