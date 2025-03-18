@@ -4,40 +4,119 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Link Voting Site</title>
+    
+    <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
+    
     <script defer src="script.js"></script>
+    
     <style>
-        body { font-family: Arial, sans-serif; text-align: center; }
+        /* Dark Theme */
+        body {
+            background-color: black;
+            color: #00ff00;
+            font-family: 'Courier New', monospace;
+            text-align: center;
+        }
+        
+        /* Navigation */
+        .nav-button {
+            background: none;
+            border: 1px solid #00ff00;
+            color: #00ff00;
+            padding: 10px 20px;
+            margin: 5px;
+            cursor: pointer;
+            font-size: 18px;
+        }
+        
+        .nav-button:hover {
+            background: #00ff00;
+            color: black;
+        }
+
+        /* Hide inactive pages */
         .page { display: none; }
         #home { display: block; }
-        button { margin: 10px; padding: 10px 20px; cursor: pointer; }
-        #vote-popup { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 20px; border: 1px solid black; }
+
+        /* Link Buttons */
+        .link-button {
+            display: block;
+            background: none;
+            border: 2px solid #00ff00;
+            color: #00ff00;
+            padding: 10px;
+            margin: 10px auto;
+            width: 250px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        
+        .link-button:hover {
+            background: #00ff00;
+            color: black;
+        }
+
+        /* Not Working Button */
+        .not-working {
+            border: 2px solid red;
+            color: red;
+            cursor: not-allowed;
+        }
+        
+        /* Vote Popup */
+        #vote-popup {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: black;
+            padding: 20px;
+            border: 2px solid #00ff00;
+            text-align: center;
+            width: 300px;
+        }
+        
+        #vote-popup button {
+            background: none;
+            border: 1px solid #00ff00;
+            color: #00ff00;
+            padding: 5px 10px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        
+        #vote-popup button:hover {
+            background: #00ff00;
+            color: black;
+        }
     </style>
 </head>
 <body>
 
-    <h1>Link Voting Site</h1>
-    <button onclick="showPage('home')">Home</button>
-    <button onclick="showPage('links')">Links</button>
+    <h1>💻 Link Voting Site</h1>
+    <button class="nav-button" onclick="showPage('home')">Home</button>
+    <button class="nav-button" onclick="showPage('links')">Links</button>
 
     <div id="home" class="page">
         <h2>Welcome to the Link Voting Site!</h2>
-        <p>Go to the Links page to see available links.</p>
+        <p>Check out the links and vote if they work.</p>
     </div>
 
     <div id="links" class="page">
-        <h2>Proxy Links</h2>
+        <h2>🔗 Proxy Links</h2>
         <div id="proxy-links"></div>
 
-        <h2>Game Links</h2>
+        <h2>🎮 Game Links</h2>
         <div id="game-links"></div>
     </div>
 
     <div id="vote-popup">
         <p>Did the site work?</p>
-        <button id="vote-yes">Yes</button>
-        <button id="vote-no">No</button>
+        <button id="vote-yes">✅ Yes</button>
+        <button id="vote-no">❌ No</button>
     </div>
 
 </body>
