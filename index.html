@@ -4,38 +4,41 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Link Voting Site</title>
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
     <script defer src="script.js"></script>
-    <link rel="stylesheet" href="styles.css">
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; }
+        .page { display: none; }
+        #home { display: block; }
+        button { margin: 10px; padding: 10px 20px; cursor: pointer; }
+        #vote-popup { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 20px; border: 1px solid black; }
+    </style>
 </head>
 <body>
-    <div class="navbar">
-        <button onclick="showPage('home')">Home</button>
-        <button onclick="showPage('links')">Links</button>
-    </div>
+
+    <h1>Link Voting Site</h1>
+    <button onclick="showPage('home')">Home</button>
+    <button onclick="showPage('links')">Links</button>
 
     <div id="home" class="page">
-        <h1>Welcome to the Link Voting Site</h1>
-        <p>Go to the "Links" tab to browse and vote on links.</p>
+        <h2>Welcome to the Link Voting Site!</h2>
+        <p>Go to the Links page to see available links.</p>
     </div>
 
-    <div id="links" class="page" style="display: none;">
-        <h1>Links</h1>
-        <div class="category">
-            <h2>Proxy Links</h2>
-            <div id="proxy-links"></div>
-        </div>
-        <div class="category">
-            <h2>Game Links</h2>
-            <div id="game-links"></div>
-        </div>
+    <div id="links" class="page">
+        <h2>Proxy Links</h2>
+        <div id="proxy-links"></div>
+
+        <h2>Game Links</h2>
+        <div id="game-links"></div>
     </div>
 
-    <div id="vote-popup" class="popup">
-        <p>Before you go, open the link in a new tab and come back to vote if it's working.</p>
-        <button id="vote-yes">Working</button>
-        <button id="vote-no">Not Working</button>
+    <div id="vote-popup">
+        <p>Did the site work?</p>
+        <button id="vote-yes">Yes</button>
+        <button id="vote-no">No</button>
     </div>
+
 </body>
 </html>
