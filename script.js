@@ -73,10 +73,18 @@ function loadLinks() {
             linksDiv.innerHTML = "";
             snapshot.forEach(child => {
                 const data = child.val();
-                if (data.downvotes >= 10) return;
                 const btn = document.createElement("button");
-                btn.innerText = data.name;
-                btn.onclick = () => showVotePopup(child.key, data.url, category);
+
+                if (data.downvotes >= 10) {
+                    btn.innerText = data.name + " (Not Working)";
+                    btn.classList.add("not-working");
+                    btn.disabled = true;
+                } else {
+                    btn.innerText = data.name;
+                    btn.classList.add("link-button");
+                    btn.onclick = () => showVotePopup(child.key, data.url, category);
+                }
+                
                 linksDiv.appendChild(btn);
             });
         });
@@ -107,11 +115,12 @@ function voteLink(key, category, type) {
     ref.once("value").then(snapshot => {
         let data = snapshot.val();
         data[type] = (data[type] || 0) + 1;
+
         if (data.downvotes >= 10) {
-            ref.remove();
-        } else {
-            ref.set(data);
+            data.status = "Not Working";
         }
+
+        ref.set(data);
         loadLinks();
     });
 }
