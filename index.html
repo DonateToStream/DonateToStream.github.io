@@ -41,30 +41,36 @@
         #home { display: block; }
 
         /* Link Buttons */
-        .link-button {
-            display: block;
-            background: none;
-            border: 3px solid #00ff00;
-            color: #00ff00;
-            padding: 15px;
-            margin: 15px auto;
-            width: 350px;
-            font-size: 20px;
-            cursor: pointer;
-        }
-        
-        .link-button:hover {
-            background: #00ff00;
-            color: black;
-        }
+.link-button {
+    display: inline-block;
+    background: black;
+    border: 3px solid #00ff00;
+    color: #00ff00;
+    padding: 20px;
+    margin: 15px;
+    width: 250px;
+    font-size: 22px;
+    font-weight: bold;
+    text-align: center;
+    border-radius: 10px; /* Rounded Corners */
+    cursor: pointer;
+    transition: 0.3s;
+}
 
-        /* Not Working Button */
-        .not-working {
-            border: 3px solid red;
-            color: red;
-            cursor: not-allowed;
-            text-decoration: line-through;
-        }
+.link-button:hover {
+    background: #00ff00;
+    color: black;
+}
+
+/* Not Working Button */
+.not-working {
+    border: 3px solid red;
+    color: red;
+    cursor: not-allowed;
+    text-decoration: line-through;
+    background: black;
+}
+
         
         /* Vote Popup */
         #vote-popup {
