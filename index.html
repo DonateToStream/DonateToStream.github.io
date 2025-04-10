@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>EASY</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="container">
+    <img src="logo.png" alt="cryptic logo" class="logo" />
+    <p class="tagline">"All info is public"</p>
+
+    <input id="search" type="text" placeholder="search titles..." />
+
+    <ul id="paste-list"></ul>
+
+    <div id="paste-view" class="hidden">
+      <h2 id="paste-title"></h2>
+      <pre id="paste-content"></pre>
+      <button onclick="goBack()">← back</button>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
