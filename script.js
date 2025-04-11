@@ -18,7 +18,7 @@ function renderList(filter = "") {
       const li = document.createElement("li");
       const a = document.createElement("a");
       a.href = "#";
-      a.textContent = p.title;
+      a.textContent = `${p.title} (${p.date})`;
       a.onclick = (e) => {
         e.preventDefault();
         loadPaste(p.title, p.file);
@@ -49,23 +49,7 @@ searchInput.addEventListener("input", () => {
   renderList(searchInput.value);
 });
 
-function renderList(filter = "") {
-  listEl.innerHTML = "";
-  pastes
-    .filter(p => p.title.toLowerCase().includes(filter.toLowerCase()))
-    .forEach(p => {
-      const li = document.createElement("li");
-      const a = document.createElement("a");
-      a.href = "#";
-      a.textContent = `${p.title} (${p.date})`;
-      a.onclick = (e) => {
-        e.preventDefault();
-        loadPaste(p.title, p.file);
-      };
-      li.appendChild(a);
-      listEl.appendChild(li);
-    });
-}
+
 const music = document.getElementById("bg-music");
 const popup = document.getElementById("music-popup");
 
