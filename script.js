@@ -63,5 +63,9 @@ function hidePopup() {
   popup.style.display = "none";
 }
 
+function closeUpdates() {
+  document.getElementById("updates-panel").style.display = "none";
+}
+
 // Init
 renderList();
