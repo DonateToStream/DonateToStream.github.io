@@ -2,6 +2,7 @@
 const pastes = [
   { title: "Drummond", file: "pastes/drummond.txt", date: "2025-04-10" },
   { title: "Harbottle", file: "pastes/harbottle.txt", date: "2025-04-10" },
+  { title: "Anderson", file: "pastes/anderson.txt", date: "2025-04-11" },
 ];
 
 const listEl = document.getElementById("paste-list");
