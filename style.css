@@ -46,7 +46,11 @@ ul li a {
   color: #0f0;
   text-decoration: none;
   border-bottom: 1px dotted #0f0;
+  font-size: 1.5rem; /* ⬅️ Bigger size */
+  display: inline-block;
+  padding: 0.5rem 0;
 }
+
 
 ul li a:hover {
   color: #0c0;
@@ -68,3 +72,26 @@ pre {
   border: 1px solid #0f0;
   white-space: pre-wrap;
 }
+
+.music-popup {
+  position: fixed;
+  top: 1rem;
+  right: 1rem;
+  background: #111;
+  color: #0f0;
+  border: 1px solid #0f0;
+  padding: 1rem;
+  z-index: 1000;
+  font-family: monospace;
+  box-shadow: 0 0 10px #0f0;
+}
+
+.music-popup button {
+  margin: 0.25rem;
+  background: black;
+  color: #0f0;
+  border: 1px solid #0f0;
+  padding: 0.3rem 0.6rem;
+  cursor: pointer;
+}
+
