@@ -1,7 +1,7 @@
 // List of pastes you’ll add in the "pastes" folder
 const pastes = [
-  { title: "Drummond", file: "pastes/drummond.txt" },
-  { title: "Harbottle", file: "pastes/harbottle.txt" },
+  { title: "Drummond", file: "pastes/drummond.txt", date: "2025-04-10" },
+  { title: "Harbottle", file: "pastes/harbottle.txt", date: "2025-04-10" },
 ];
 
 const listEl = document.getElementById("paste-list");
@@ -48,6 +48,35 @@ function goBack() {
 searchInput.addEventListener("input", () => {
   renderList(searchInput.value);
 });
+
+function renderList(filter = "") {
+  listEl.innerHTML = "";
+  pastes
+    .filter(p => p.title.toLowerCase().includes(filter.toLowerCase()))
+    .forEach(p => {
+      const li = document.createElement("li");
+      const a = document.createElement("a");
+      a.href = "#";
+      a.textContent = `${p.title} (${p.date})`;
+      a.onclick = (e) => {
+        e.preventDefault();
+        loadPaste(p.title, p.file);
+      };
+      li.appendChild(a);
+      listEl.appendChild(li);
+    });
+}
+const music = document.getElementById("bg-music");
+const popup = document.getElementById("music-popup");
+
+function playMusic() {
+  music.play();
+  popup.style.display = "none";
+}
+
+function hidePopup() {
+  popup.style.display = "none";
+}
 
 // Init
 renderList();
