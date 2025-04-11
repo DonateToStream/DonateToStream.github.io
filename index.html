@@ -10,6 +10,18 @@
 </head>
 <body>
   <div class="container">
+    <!-- 🎵 Music popup -->
+<div id="music-popup" class="music-popup">
+  <p>Play background music?</p>
+  <button onclick="playMusic()">Yes</button>
+  <button onclick="hidePopup()">No</button>
+</div>
+
+<!-- 🔊 Hidden music -->
+<audio id="bg-music" loop>
+  <source src="music.mp3" type="audio/mpeg" />
+</audio>
+
     <img src="guesswhattt.jpg" alt="cryptic logo" class="logo" />
     <p class="tagline">"text might be hard to see so just search the exact name then click the first one"</p>
 
